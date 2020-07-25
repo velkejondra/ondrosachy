@@ -1,0 +1,19 @@
+before_script:
+  - echo "test"
+stages:
+  - testing
+  - build-package
+
+
+unit-tests:
+  stage: testing
+  script:
+  - echo "test"
+
+
+build-python-package:
+  stage: build-package
+  script:
+  - echo "test"
+
+
