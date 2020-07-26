@@ -1,6 +1,10 @@
 #include <iostream>
+typedef unsigned long long bitboard;
 
+#include "Board.h"
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Board board = Board();
+    bitboard test = 511;
+    board.BitboardRepresentation(test);
     return 0;
 }
