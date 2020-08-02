@@ -1,0 +1,25 @@
+image: gcc:latest
+
+before_script:
+  - apt update
+  - apt install -y g++
+  - apt install -y cmake
+stages:
+  - testing
+  - build-package
+
+
+testy:
+  stage: testing
+  script:
+  - echo "test"
+
+build:
+  stage: build-package
+  script:
+  - cmake -H. -BBuild
+  - /usr/bin/cmake --build /builds/OndraKnow/chess/Build --config Debug --target all -- -j 6
+  artifacts:
+    paths:
+      - /builds/OndraKnow/chess/
+
