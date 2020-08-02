@@ -86,3 +86,6 @@ _deps
 
 # cmake
 build
+
+.vscode
+.idea
