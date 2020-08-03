@@ -5,7 +5,6 @@
 #include "Board.h"
 
 void Board::BitboardRepresentation(bitboard board) {
-    cout << board << endl;
     for (int i = 0; i < 64; ++i) {
         cout << (board & 1);
         if (i % 8 == 7) {
@@ -17,9 +16,38 @@ void Board::BitboardRepresentation(bitboard board) {
 
 void Board::PrecomputeKnights() {
     for (int i = 0; i < 64; ++i) {
-        if (i % 8 < 7 and i < 55) {
-            cout << ((1 << i) << 10) << endl;
-            this->PrecomputedKnights[i] ^= (1 << i) << 10;
+        // up big right
+        if (i % 8 < 6 and i < 56) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) << 10;
+        }
+        // up big lef
+        if (i % 8 > 1 and i < 56) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) << 6;
+        }
+        // down big left
+        if (i % 8 > 1 and i > 7) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) >> 10;
+        }
+        // down big right
+        if (i % 8 < 6 and i > 7) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) >> 6;
+        }
+
+        // up small right
+        if (i % 8 <= 6 and i < 48) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) << 17;
+        }
+        // up small left
+        if (i % 8 >= 1 and i < 48) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) << 15;
+        }
+        // down small left
+        if (i % 8 >= 1 and i > 15) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) >> 17;
+        }
+        // down small right
+        if (i % 8 <= 6 and i > 15) {
+            this->PrecomputedKnights[i] ^= (1ULL << i) >> 15;
         }
     }
 }
