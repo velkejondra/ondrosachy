@@ -5,15 +5,19 @@
 #ifndef CHESS_ENGINE_CPP_BOARD_H
 #define CHESS_ENGINE_CPP_BOARD_H
 typedef unsigned long long bitboard;
+
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 class Board {
     /* The white piece positions */
-   public:
+public:
     bitboard PrecomputedKnights[64];
+
     void PrecomputeKnights();
+
     void PrecomputeAll();
 
     bitboard WhitePawns;
@@ -36,8 +40,14 @@ class Board {
     bitboard AllBlackPieces;
     bitboard AllPieces;
 
-   public:
+public:
     void BitboardRepresentation(bitboard board);
+};
+
+class PrecomputedBitboards {
+public:
+    bitboard precomputed_knights[64];
+    bitboard precomputed_kings[64];
 };
 
 #endif  // CHESS_ENGINE_CPP_BOARD_H

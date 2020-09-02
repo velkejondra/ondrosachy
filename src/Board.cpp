@@ -14,13 +14,17 @@ void Board::BitboardRepresentation(bitboard board) {
     }
 }
 
+void BoardPrecomputeKnights(){
+
+}
+
 void Board::PrecomputeKnights() {
     for (int i = 0; i < 64; ++i) {
         // up big right
         if (i % 8 < 6 and i < 56) {
             this->PrecomputedKnights[i] ^= (1ULL << i) << 10;
         }
-        // up big lef
+        // up big left
         if (i % 8 > 1 and i < 56) {
             this->PrecomputedKnights[i] ^= (1ULL << i) << 6;
         }
