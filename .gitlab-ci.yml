@@ -21,5 +21,5 @@ build:
   - /usr/bin/cmake --build /builds/OndraKnow/chess/Build --config Debug --target all -- -j 6
   artifacts:
     paths:
-      - /builds/OndraKnow/chess/
+      - /builds/OndraKnow/chess/Build
 

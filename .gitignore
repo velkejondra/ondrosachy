@@ -89,3 +89,9 @@ build
 
 .vscode
 .idea
+/latex/
+
+
+*.exe
+
+*.cbp
