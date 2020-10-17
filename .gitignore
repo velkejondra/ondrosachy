@@ -95,3 +95,5 @@ build
 *.exe
 
 *.cbp
+/src/chess_engine_cpp
+/bin/

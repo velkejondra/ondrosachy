@@ -57,23 +57,31 @@ void PrecomputedBitboards::PrecomputeKnights() {
 
 void PrecomputedBitboards::PrecomputeAll() {
     PrecomputeKnights();
-    // PrecomputeKings();
-    // FillRowcolMask();
+    PrecomputeKings();
+    FillRowcolMask();
 }
 
 void PrecomputedBitboards::PrecomputeKings() {
     for (int i = 0; i < 64; ++i) {
         //TODO pridat pocitani tahu pro krale
+//        spot1
+//        spot2
+//        spot3
+//        spot4
+//        spot5
+//        spot6
+//        spot7
+//        spot8
     }
 }
-// void PrecomputedBitboards::FillRowcolMask() {
-//     for(int i = 0; i < 16; ++i){
-//         if (i < 8){
-//             for (int j = 0; j < 8; ++j){
-//                 this->col_row_mask[i] |= (1 << j) << (8*i);
-//             }
-//         }
-//     }
-// }
 
-
+void PrecomputedBitboards::FillRowcolMask() {
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            this->col_row_mask[i] |= (1ULL << i) << (8 * j);
+        }
+    }
+    for (int i = 8; i < 16; ++i) {
+        this->col_row_mask[i] = 255ULL << ((i - 8) * 8);
+    }
+}
