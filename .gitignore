@@ -97,3 +97,14 @@ build
 *.cbp
 /src/chess_engine_cpp
 /bin/
+
+#latex
+/Dokumentace/LaTeX_Template/
+*.log
+*.aux
+*.lot
+*.toc
+*.lof
+*.gz
+
+/Dokumentace/zadani.tex

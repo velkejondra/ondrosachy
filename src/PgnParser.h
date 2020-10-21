@@ -11,7 +11,7 @@
 class PgnParser {
     PgnParser();
     // Vytvoří json soubor
-    void parse_pgn_to_file(std::string input_file, std::string output_file="opening_book.ondra");
+    void parse_pgn_to_file(std::string input_file);
 
 };
 
