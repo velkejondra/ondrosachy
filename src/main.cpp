@@ -1,9 +1,11 @@
 #include <iostream>
 #include "Board.h"
+#include "PrecomputedBitboards.h"
+//#include "debug.h"
+using namespace std;
+
 int main() {
-    PrecomputedBitboards b = PrecomputedBitboards();
-    b.PrecomputeAll();
-    Board a = Board();
-    a.BitboardRepresentation(b.col_row_mask[CHESS_FILE::COl_2]);
+    auto *b = new PrecomputedBitboards();
+    cout << BitboardRepresentation(b->precomputed_kings[63]) << endl;
     return 0;
 }

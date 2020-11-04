@@ -13,7 +13,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${UNIT_TESTS_INCLUDES})
 
 set(SOURCE_FILES board_test.cpp)
-add_executable(chess_tests board_test.cpp ../src/Board.h ../src/Board.cpp ../src/PgnParser.cpp ../src/PgnParser.h)
+add_executable(chess_tests board_test.cpp ../src/PrecomputedBitboards.cpp ../src/PrecomputedBitboards.h ../src/Board.h ../src/Board.cpp ../src/PgnParser.cpp ../src/PgnParser.h)
 
 target_link_libraries(chess_tests
         ${Boost_FILESYSTEM_LIBRARY}

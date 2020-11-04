@@ -1,9 +1,7 @@
-image: gcc:latest
+image: registry.gitlab.com/ondraknow/chess:latest
 
 before_script:
-  - apt update
-  - apt install -y g++
-  - apt install -y cmake
+  - echo "richard"
 stages:
   - testing
   - build-package

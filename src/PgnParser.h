@@ -10,7 +10,7 @@
 
 class PgnParser {
     PgnParser();
-    // Vytvoří json soubor
+    // Vytvoří soubor
     void parse_pgn_to_file(std::string input_file);
 
 };

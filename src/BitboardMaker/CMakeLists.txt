@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.13.4)
+project(bitboard_maker)
+find_package (Threads)
+set(maker_source main.cpp olcPixelGameEngine.h)
+add_executable(bitboard_maker ${maker_source})
+target_link_libraries(bitboard_maker ${CMAKE_THREAD_LIBS_INIT} X11 Xext png z m glut GL GLU stdc++fs)

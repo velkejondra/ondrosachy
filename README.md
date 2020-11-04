@@ -1,6 +1,5 @@
 # Šachový engine
 
-
 ## struktura repozitáře
 
 📦chess_gitlab\
@@ -10,14 +9,13 @@
  ┃ ┣ 📜Board.h\
  ┃ ┣ 📜CMakeLists.txt\
  ┃ ┣ 📜main.cpp\
- ┃ ┣ 📜PgnParser.cpp\
+ ┃ ┣ 📜PgnParser.cpp // Parsuje pgn formát a vytváří indexovaný databázi pozic \
  ┃ ┗ 📜PgnParser.h\
  ┣ 📂tests\
  ┃ ┣ 📜board_test.cpp\
  ┃ ┣ 📜CMakeLists.txt\
  ┣ 📜.gitignore\
  ┣ 📜.gitlab-ci.yml\
- ┣ 📜CMakeCache.txt\
  ┣ 📜CMakeLists.txt\
  ┗ 📜README.md\
  
