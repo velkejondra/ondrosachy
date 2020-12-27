@@ -86,25 +86,36 @@ const int bishop_index_bits[64] = {
 bitboard ComputeRook(bitboard attacks, bitboard blockers, int pos);
 
 bitboard GetBlockersFromIndex(int index, bitboard mask);
+
 void CheckRookRay(bitboard &attacks, bitboard &blockers, int pos, int nahoru, int max, int min);
 
 
 /*
 Předpočíta pozice kam může daná figurka útočit
 pozice se spočítají při inicializaci objektu
-Příklad použití:
-    PrecomputedBitboards precomp_bitboards = PrecomputedBitboards();
 
+Tato třída je singleton takže může existovat jenom jedna instace této třídy
+
+Příklad použití:
+    PrecomputedBitboards &precomp_bitboards = PrecomputedBitboards::getInstance();
+
+    bitboard pozice = precomp_bitboards.precomputed_knights[knight_position];
     // vrátí bitmapu s možnýmy pozicemi na táhnutí,
     tahy nemusí být validní podle šachových pravidel. Pozice se musí ještě ověřit.
-    precomp_bitboards.precomputed_knights[knight_position];
 
 */
+
+
 class PrecomputedBitboards {
 public:
-    PrecomputedBitboards() {
-        PrecomputeAll();
+    static PrecomputedBitboards &getInstance() {
+        static PrecomputedBitboards instance;
+        return instance;
     }
+
+    PrecomputedBitboards(PrecomputedBitboards const &) = delete;
+
+    void operator=(PrecomputedBitboards const &) = delete;
 
     bitboard precomputed_knights[64];
     bitboard precomputed_kings[64];
@@ -119,6 +130,12 @@ public:
 
     // maska na řádek či sloupec
     bitboard col_row_mask[16];
+private:
+
+    PrecomputedBitboards() {
+        PrecomputeAll();
+    }
+
 
     // predpočítá všechny potřebné bitmapy na počítání možných pozic
     void PrecomputeAll();

@@ -108,3 +108,4 @@ build
 *.gz
 
 /Dokumentace/zadani.tex
+/src/sample database

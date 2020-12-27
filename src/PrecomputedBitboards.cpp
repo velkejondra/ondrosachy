@@ -55,8 +55,8 @@ void PrecomputedBitboards::PrecomputeAll() {
 
 void PrecomputedBitboards::PrecomputeKings() {
     for (int i = 0; i < 64; ++i) {
-        if (i == 7){
-            bool test = truehoulcou
+        if (i == 7) {
+            bool test = true;
         }
         this->precomputed_kings[i] ^= (1ULL << i) << 7 & ~this->col_row_mask[CHESS_FILE::COl_8];
         this->precomputed_kings[i] ^= (1ULL << i) << 8;
@@ -103,11 +103,12 @@ bitboard GetBlockersFromIndex(int index, bitboard mask) {
 void PrecomputedBitboards::PrecomputeRooks() {
     for (int i = 0; i < 64; ++i) {
         for (int j = 0; j < 1ULL << rook_index_bits[i]; ++j) {
-            if (j==1036){
+            if (j == 1036) {
                 bool test = true;
             }
             bitboard blockers = GetBlockersFromIndex(j, this->rook_rays[i]);
-            this->precomputed_rooks[i][(rooks_magic[i] * blockers) >> (64 - rook_index_bits[i])] = ComputeRook(this->rook_rays[i], blockers, i);
+            this->precomputed_rooks[i][(rooks_magic[i] * blockers) >> (64 - rook_index_bits[i])] = ComputeRook(
+                    this->rook_rays[i], blockers, i);
         }
     }
 }
@@ -133,7 +134,8 @@ void PrecomputedBitboards::PrecomputeBishipRays() {
                 top_mask ^= this->col_row_mask[8 + j];
             }
             this->biship_rays[i] |= (0x8040201008040201ULL >> (row - col)) & top_mask;
-        } else {
+        }
+        else {
             bitboard mask = ULLONG_MAX;
             for (int j = 0; j < col - row; ++j) {
                 mask ^= this->col_row_mask[15 - j];
@@ -146,7 +148,8 @@ void PrecomputedBitboards::PrecomputeBishipRays() {
                 side_mask ^= this->col_row_mask[i];
             }
             this->biship_rays[i] |= (0x102040810204080ULL >> (row - (7 - col))) & side_mask;
-        } else {
+        }
+        else {
             bitboard side_mask = ULLONG_MAX;
             for (int j = 0; j < ((7 - col) - row); ++j) {
                 side_mask ^= this->col_row_mask[7 - j];
@@ -175,9 +178,9 @@ bitboard ComputeRook(bitboard attacks, bitboard blockers, int pos) {
     //dolu
     CheckRookRay(attacks, blockers, pos, -8, 63, 0);
     //doleva
-    CheckRookRay(attacks, blockers, pos, -1, pos/8 * 8 + 6, pos / 8 * 8);
+    CheckRookRay(attacks, blockers, pos, -1, pos / 8 * 8 + 6, pos / 8 * 8);
     //doprava
-    CheckRookRay(attacks, blockers, pos, 1, pos/8 * 8 + 6, pos / 8 * 8);
+    CheckRookRay(attacks, blockers, pos, 1, pos / 8 * 8 + 6, pos / 8 * 8);
 
     return attacks;
 }

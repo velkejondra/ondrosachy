@@ -3,16 +3,18 @@
 //
 #ifndef CHESS_ENGINE_CPP_PGNPARSER_H
 #define CHESS_ENGINE_CPP_PGNPARSER_H
+
 #include <iostream>
 
 
-
-
 class PgnParser {
-    PgnParser();
-    // Vytvoří soubor
-    void parse_pgn_to_file(std::string input_file);
 
+public:
+    PgnParser() = default;
+
+// Vytvoří soubor
+
+    void ParsePgnToFile(const std::string input_file, int depth);
 };
 
 class OpeningBook {

@@ -10,38 +10,73 @@ typedef unsigned long long bitboard;
 #include <string>
 #include "PrecomputedBitboards.h"
 
+enum PIECE {
+    PAWN,
+    KNIGHT,
+    BISHOP,
+    ROOK,
+    QUEEN,
+    KING,
+};
+enum COLOR {
+    WHITE,
+    BLACK,
+};
+
+struct Move {
+    int from;
+    int to;
+    int piece_type;
+    int capture_piece_type;
+    bool capture;
+    int promotion;
+    bool castling;
+    bool en_passant;
+};
 
 class Board {
 public:
     // bitboards
     //bitmapy bilych kusu
-    bitboard WhitePawns;
-    bitboard WhiteRooks;
-    bitboard WhiteKnights;
-    bitboard WhiteBishops;
-    bitboard WhiteQueens;
-    bitboard WhiteKing;
 
-    //bitmapy cernych kusu
-    bitboard BlackPawns;
-    bitboard BlackRooks;
-    bitboard BlackKnights;
-    bitboard BlackBishops;
-    bitboard BlackQueens;
-    bitboard BlackKing;
+    bitboard all_bitboards[2][6]{};
+
 
     // spojene pozice
-    bitboard AllWhitePieces;
-    bitboard AllBlackPieces;
-    bitboard AllPieces;
+    inline bitboard AllWhitePieces();
 
-    // predpocitane utecne pozice pro figurky
-    PrecomputedBitboards *precomputed_bitboards;
+    inline bitboard AllBlackPieces();
+
+    bitboard AllPieces();
+
+    bitboard board_zobrist[2][6][64]{};
+    bitboard castling_zobrist[4]{};
+    bitboard side_to_move_zobrist{};
+    bitboard en_passant_zobrist[8]{};
 
 public:
-    Board(PrecomputedBitboards *precomputed_bitboards){
-        this->precomputed_bitboards = precomputed_bitboards;
-    }
+
+    Board();
+
+    int on_turn = WHITE;
+
+    void MakeMove(Move move);
+
+    void MakeMove(bool small_castle);
+
+
+    void MakeMoveFromPGN(std::string move);
+
+    void InitZobrist();
+
+    void ComputeZobristHash();
+
+    void AdjustZobrist(Move m);
+
+    std::string last_destination;
+    Move last_move{};
+    bitboard zobrist_hash{};
+    int en_passant{};
 };
 
 
