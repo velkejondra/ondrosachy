@@ -4,4 +4,4 @@
 
 #include "RandomGenerator.h"
 
-gen (time(NULL));
+gen(time(NULL));

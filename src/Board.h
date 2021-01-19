@@ -8,6 +8,7 @@ typedef unsigned long long bitboard;
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "PrecomputedBitboards.h"
 
 enum PIECE {
@@ -47,6 +48,8 @@ public:
 
     inline bitboard AllBlackPieces();
 
+    bitboard PiecesOfColor(bool color);
+
     bitboard AllPieces();
 
     bitboard board_zobrist[2][6][64]{};
@@ -58,9 +61,13 @@ public:
 
     Board();
 
-    int on_turn = WHITE;
+    bool on_turn = WHITE;
 
     void MakeMove(Move move);
+
+    bool InCheck(int color);
+
+    void UndoMove(Move move);
 
     void MakeMove(bool small_castle);
 
@@ -73,10 +80,26 @@ public:
 
     void AdjustZobrist(Move m);
 
+    int getPieceAt(int position);
+
     std::string last_destination;
     Move last_move{};
+    std::vector<Move> last_moves;
     bitboard zobrist_hash{};
-    int en_passant{};
+    int en_passant = -1;
+    int last_en_passant = -1;
+
+    std::vector<Move> getLegalMoves();
+
+    std::vector<Move> getPseudoLegalMoves();
+
+    bitboard MyPieces();
+
+    bitboard EnemyPieces();
+
+    bitboard GetAllBitboardAttacks(bool color);
+
+    std::string GetMoveNotation();
 };
 
 

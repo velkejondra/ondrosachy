@@ -3,18 +3,26 @@
 #include "PrecomputedBitboards.h"
 #include "defs.h"
 #include "Board.h"
+#include "eval.h"
+#include "MoveGenerator.h"
 //#include "debug.h"
 using namespace std;
 
 int main() {
+
+    PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
+    cout << BitboardRepresentation(precomp.col_row_mask[CHESS_FILE::ROW_A]);
     Board board = Board();
-    cout << BitboardRepresentation(board.AllPieces()) << endl;
-    Move m = Move{e2, e4, PAWN};
-    Move n = Move{d7, d5, PAWN};
-    board.MakeMove(m);
-    board.MakeMove(n);
-    Move c = Move{e4, d5, PAWN, PAWN, true};
-    board.MakeMove(c);
-    cout << BitboardRepresentation(board.AllPieces()) << endl;
+    board.MakeMove(Move{e2, e4, PAWN});
+    board.MakeMove(Move{d7, d5, PAWN});
+    board.MakeMove(Move{d2, d4, PAWN});
+    MoveGenerator gen = MoveGenerator();
+    vector<Move> moves = gen.getLegalMoves(board);
+    for (auto move : moves) {
+        if (move.capture) {
+            bool test = true;
+        }
+    }
+
     return 0;
 }

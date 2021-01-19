@@ -4,6 +4,7 @@
 
 #include <climits>
 #include "PrecomputedBitboards.h"
+#include "debug.h"
 
 void PrecomputedBitboards::PrecomputeKnights() {
     for (int i = 0; i < 64; ++i) {
@@ -48,7 +49,8 @@ void PrecomputedBitboards::PrecomputeAll() {
     FillRowcolMask();
     PrecomputeKnights();
     PrecomputeKings();
-    PrecomputeBishipRays();
+    PrecomputeBishopRays();
+    PrecomputeBiships();
     PrecomputeRookRays();
     PrecomputeRooks();
 }
@@ -81,15 +83,18 @@ void PrecomputedBitboards::FillRowcolMask() {
 }
 
 inline int _popLsb(bitboard &board) {
-    //TODO compiler independent
     int lsbIndex = __builtin_ffsll(board) - 1;
     board &= board - 1;
     return lsbIndex;
 }
 
+inline int _popCount(bitboard board) {
+    return __builtin_popcountll(board);
+}
+
 bitboard GetBlockersFromIndex(int index, bitboard mask) {
     bitboard blockers = 0ULL;
-    int bits = __builtin_popcountll(mask); //TODO compiler independent
+    int bits = _popCount(mask);
     for (int i = 0; i < bits; i++) {
         int bitPos = _popLsb(mask);
         if (index & (1 << i)) {
@@ -103,9 +108,6 @@ bitboard GetBlockersFromIndex(int index, bitboard mask) {
 void PrecomputedBitboards::PrecomputeRooks() {
     for (int i = 0; i < 64; ++i) {
         for (int j = 0; j < 1ULL << rook_index_bits[i]; ++j) {
-            if (j == 1036) {
-                bool test = true;
-            }
             bitboard blockers = GetBlockersFromIndex(j, this->rook_rays[i]);
             this->precomputed_rooks[i][(rooks_magic[i] * blockers) >> (64 - rook_index_bits[i])] = ComputeRook(
                     this->rook_rays[i], blockers, i);
@@ -115,60 +117,89 @@ void PrecomputedBitboards::PrecomputeRooks() {
 
 void PrecomputedBitboards::PrecomputeRookRays() {
     for (int i = 0; i < 64; ++i) {
-        this->rook_rays[i] |= 0x0101010101010101ULL << (i % 8);
-        this->rook_rays[i] |= 0xFFULL << (i / 8 * 8);
+        this->rook_rays[i] |= 0x1010101010100ULL << (i % 8);
+        this->rook_rays[i] |= 0x7eULL << (i / 8 * 8);
+        this->rook_rays[i] &= ~(1ULL << i);
     }
 }
 
-void PrecomputedBitboards::PrecomputePawns() {
 
-}
-
-void PrecomputedBitboards::PrecomputeBishipRays() {
+void PrecomputedBitboards::PrecomputeBishopRays() {
     for (int i = 0; i < 64; ++i) {
-        int row = i / 8;
-        int col = i % 8;
-        if (row > col) {
-            bitboard top_mask = ULLONG_MAX;
-            for (int j = 0; j < row - col; ++j) {
-                top_mask ^= this->col_row_mask[8 + j];
-            }
-            this->biship_rays[i] |= (0x8040201008040201ULL >> (row - col)) & top_mask;
+
+
+        int directions[] = {9, 7, -7, -9};
+        for (int dir : directions) {
+            this->bishop_rays[i] |= slow_bishop_ray(i, dir);
+
         }
-        else {
-            bitboard mask = ULLONG_MAX;
-            for (int j = 0; j < col - row; ++j) {
-                mask ^= this->col_row_mask[15 - j];
+
+    }
+}
+
+void PrecomputedBitboards::PrecomputeBiships() {
+    for (int i = 0; i < 64; ++i) {
+        for (int j = 0; j < 1ULL << bishop_index_bits[i]; ++j) {
+            bitboard blockers = GetBlockersFromIndex(j, this->bishop_rays[i]);
+            if (blockers == 18014398509481984ULL) {
+                bool test = true;
             }
-            this->biship_rays[i] |= (0x8040201008040201ULL << (col - row)) & mask;
-        }
-        if (row > 7 - col) {
-            bitboard side_mask = ULLONG_MAX;
-            for (int i = 0; i < (row - (7 - col)); ++i) {
-                side_mask ^= this->col_row_mask[i];
-            }
-            this->biship_rays[i] |= (0x102040810204080ULL >> (row - (7 - col))) & side_mask;
-        }
-        else {
-            bitboard side_mask = ULLONG_MAX;
-            for (int j = 0; j < ((7 - col) - row); ++j) {
-                side_mask ^= this->col_row_mask[7 - j];
-            }
-            this->biship_rays[i] |= (0x102040810204080ULL >> ((7 - col) - row)) & side_mask;
+            this->precomputed_bishops[i][(bishop_magics[i] * blockers) >> (64 - bishop_index_bits[i])] = ComputeBishop(
+                    this->bishop_rays[i], blockers, i);
+            bool test= true;
         }
     }
+
+}
+
+bitboard PrecomputedBitboards::slow_bishop_ray(int pos, int direction) {
+    bitboard ray = 0ULL;
+    int last = pos % 8;
+    pos += direction;
+    while (pos >= 0 && pos < 64 && abs(last - pos % 8) < 2) {
+        ray |= 1ULL << pos;
+        last = pos % 8;
+        pos += direction;
+    }
+    // odstraneni okraju
+    return ray & ~0xff818181818181ffULL;
+
+
 }
 
 void CheckRookRay(bitboard &attacks, bitboard &blockers, int pos, int nahoru, int max, int min) {
     bool blocked = false;
+    pos += nahoru;
     while (pos <= max and pos >= min) {
-        pos += nahoru;
         if (blocked) {
-            attacks ^= 1ULL << (pos);
+            attacks &= ~(1ULL << (pos));
+        }
+        else {
+            attacks |= 1ULL << (pos);
         }
         if ((blockers >> (pos)) & 1ULL) {
             blocked = true;
         }
+        pos += nahoru;
+    }
+}
+
+void CheckBishopRay(bitboard &attacks, bitboard &blockers, int pos, int nahoru, int max, int min) {
+    bool blocked = false;
+    int last = pos % 8;
+    pos += nahoru;
+    while (pos >= 0 && pos < 64 && abs(last - pos % 8) < 2) {
+        if (blocked) {
+            attacks &= ~(1ULL << (pos));
+        }
+        else {
+            attacks |= 1ULL << (pos);
+        }
+        if ((blockers >> (pos)) & 1ULL) {
+            blocked = true;
+        }
+        last = pos % 8;
+        pos += nahoru;
     }
 }
 
@@ -178,10 +209,23 @@ bitboard ComputeRook(bitboard attacks, bitboard blockers, int pos) {
     //dolu
     CheckRookRay(attacks, blockers, pos, -8, 63, 0);
     //doleva
-    CheckRookRay(attacks, blockers, pos, -1, pos / 8 * 8 + 6, pos / 8 * 8);
+    CheckRookRay(attacks, blockers, pos, -1, pos / 8 * 8 + 7, pos / 8 * 8);
     //doprava
-    CheckRookRay(attacks, blockers, pos, 1, pos / 8 * 8 + 6, pos / 8 * 8);
+    CheckRookRay(attacks, blockers, pos, 1, pos / 8 * 8 + 7, pos / 8 * 8);
 
     return attacks;
 }
 
+bitboard ComputeBishop(bitboard attacks, bitboard blockers, int pos) {
+    // pravo nahoru
+    CheckBishopRay(attacks, blockers, pos, 9, 63, 0);
+    // vlevo dolu
+    CheckBishopRay(attacks, blockers, pos, 7, 63, 0);
+    // vlevo nahoru
+    CheckBishopRay(attacks, blockers, pos, -9, pos / 8 * 8 + 7, pos / 8 * 8);
+    // vpravo dolu
+    CheckBishopRay(attacks, blockers, pos, -7, pos / 8 * 8 + 7, pos / 8 * 8);
+
+    return attacks;
+
+}

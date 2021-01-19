@@ -59,6 +59,7 @@ const bitboard bishop_magics[64] = {
         0x41010500040c020ULL, 0x4012020c04210308ULL, 0x208220a202004080ULL, 0x111040120082000ULL, 0x6803040141280a00ULL,
         0x2101004202410000ULL, 0x8200000041108022ULL, 0x21082088000ULL, 0x2410204010040ULL, 0x40100400809000ULL,
         0x822088220820214ULL, 0x40808090012004ULL, 0x910224040218c9ULL, 0x402814422015008ULL, 0x90014004842410ULL,
+        0x1000042304105ULL, 0x10008830412a00ULL, 0x2520081090008908ULL, 0x40102000a0a60140ULL,
 
 };
 // Počet bitů použiváných na indexování pro tahy věží a střelcem
@@ -84,6 +85,8 @@ const int bishop_index_bits[64] = {
 };
 
 bitboard ComputeRook(bitboard attacks, bitboard blockers, int pos);
+
+bitboard ComputeBishop(bitboard attacks, bitboard blockers, int pos);
 
 bitboard GetBlockersFromIndex(int index, bitboard mask);
 
@@ -122,10 +125,10 @@ public:
 
 
     bitboard rook_rays[64];
-    bitboard biship_rays[64];
+    bitboard bishop_rays[64];
 
     bitboard precomputed_rooks[64][4096];
-    bitboard precomputed_biships[64][4096];
+    bitboard precomputed_bishops[64][4096];
 
 
     // maska na řádek či sloupec
@@ -150,12 +153,14 @@ private:
 
     void PrecomputeRooks();
 
-    void PrecomputePawns();
-
     void PrecomputeRookRays();
 
-    void PrecomputeBishipRays();
+    void PrecomputeBishopRays();
 
+    void PrecomputeBiships();
+
+
+    bitboard slow_bishop_ray(int pos, int direction);
 };
 
 #endif //CHESS_ENGINE_CPP_PRECOMPUTEDBITBOARDS_H
