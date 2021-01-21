@@ -83,8 +83,8 @@ void Board::MakeMove(Move move) {
         all_bitboards[on_turn][PAWN] |= (1ULL << (move.to));
 
         // smazani sebrateho pesaka
-        all_bitboards[!on_turn][PAWN] &= ~(1ULL << (move.to + (on_turn * 16 + 8)));
-        return;
+        auto plus_minus = on_turn ? &add : &sub;
+        all_bitboards[!on_turn][PAWN] &= ~(1ULL << (plus_minus(move.to, 8)));
     }
     else if (move.capture) {
         //smazani sebrate figurky

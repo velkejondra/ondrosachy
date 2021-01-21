@@ -22,8 +22,8 @@ enum CHESS_FILE {
     ROW_B,
     ROW_C,
     ROW_D,
-    ROW_F,
     ROW_E,
+    ROW_F,
     ROW_G,
     ROW_H,
 };

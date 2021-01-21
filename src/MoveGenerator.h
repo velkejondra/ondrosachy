@@ -14,6 +14,10 @@ bitboard shift_left(bitboard num, int shift_size);
 
 bitboard shift_right(bitboard num, int shift_size);
 
+int add(int a, int b);
+
+int sub(int a, int b);
+
 class MoveGenerator {
 public:
     std::vector<Move> getLegalMoves(Board &board);

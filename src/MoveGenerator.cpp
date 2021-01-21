@@ -158,8 +158,11 @@ void MoveGenerator::getPawnAttacks(vector<Move> &moves, Board &board) {
             int from = __builtin_ffsll(pawns);
             from--;
             pawns ^= 1ULL << from;
-            if (abs(from - board.en_passant) == 1) {
-                moves.push_back(Move{from, plus_minus(board.en_passant, 8), PAWN, PAWN, true, 0, false, true});
+            if (abs(from % 8 - board.en_passant) == 1) {
+                int add_to_position = board.on_turn ? 24 : 40;
+                moves.push_back(
+                        Move{from, add_to_position + board.en_passant, PAWN, PAWN, true, 0, false,
+                             true});
             }
         }
     }
@@ -269,42 +272,42 @@ void MoveGenerator::getQueenAttacks(vector<Move> &vector, Board &board) {
                 vector.push_back(Move{queen, to, QUEEN});
             }
         }
+    }
 
 
 
-        //střelcové útoky dámy
+    //střelcové útoky dámy
 
-        queens = board.all_bitboards[board.on_turn][QUEEN];
+    queens = board.all_bitboards[board.on_turn][QUEEN];
 
-        while (queens) {
-            int queen = __builtin_ffsll(queens);
-            queen--;
-            queens ^= 1ULL << queen;
+    while (queens) {
+        int queen = __builtin_ffsll(queens);
+        queen--;
+        queens ^= 1ULL << queen;
 
-            bitboard bishop_blockers = precomp.bishop_rays[queen] & all_pieces;
+        bitboard bishop_blockers = precomp.bishop_rays[queen] & all_pieces;
 
-            bitboard bishop_index = (bishop_magics[queen] * bishop_blockers) >> (64 - bishop_index_bits[queen]);
+        bitboard bishop_index = (bishop_magics[queen] * bishop_blockers) >> (64 - bishop_index_bits[queen]);
 
-            bitboard bishop_attacks = precomp.precomputed_bishops[queen][bishop_index] & ~my_pieces;
+        bitboard bishop_attacks = precomp.precomputed_bishops[queen][bishop_index] & ~my_pieces;
 
-            int to;
-            while (bishop_attacks) {
-                to = __builtin_ffsll(bishop_attacks);
-                to--;
-                bishop_attacks ^= 1ULL << to;
+        int to;
+        while (bishop_attacks) {
+            to = __builtin_ffsll(bishop_attacks);
+            to--;
+            bishop_attacks ^= 1ULL << to;
 
-                if (enemy_pieces >> to & 1ULL) {
-                    vector.push_back(Move{queen, to, QUEEN, board.getPieceAt(to), true});
-                }
-                else {
-                    vector.push_back(Move{queen, to, QUEEN});
-                }
+            if (enemy_pieces >> to & 1ULL) {
+                vector.push_back(Move{queen, to, QUEEN, board.getPieceAt(to), true});
             }
-
+            else {
+                vector.push_back(Move{queen, to, QUEEN});
+            }
         }
 
-
     }
+
+
 }
 
 void MoveGenerator::getKingAttacks(vector<Move> &vector, Board &board) {
