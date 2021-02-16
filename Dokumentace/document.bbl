@@ -1,0 +1,19 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\selectlanguage}[1]{\relax}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{shannon_number}
+Claude, E.~S.: Programming a Computer for Playing Chess. \emph{Philosophical
+  Magazine, Ser}, ročník~7, �.~41, 1950: str. 314.
+
+\bibitem{dama}
+Schaeffer, J.; Björnsson, Y.; Kishimoto, A.; aj.: Checkers Is Solved.
+  \emph{Science}, ročník 317, 10 2007: s. 1518--1522.
+
+\end{thebibliography}

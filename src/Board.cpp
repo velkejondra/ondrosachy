@@ -103,9 +103,11 @@ void Board::MakeMove(Move move) {
             en_passant = move.from % 8;
         }
     }
+    if (move.promotion != 0) {
+        all_bitboards[on_turn][PAWN] &= ~(1ULL << move.to);
+        all_bitboards[on_turn][QUEEN] |= 1ULL << move.to;
+    }
     on_turn = !on_turn;
-
-
 }
 
 Board::Board() {
@@ -244,6 +246,9 @@ void Board::UndoMove(Move move) {
 int Board::getPieceAt(int position) {
     for (int i = 0; i < 6; ++i) {
         if (all_bitboards[!on_turn][i] >> position & 1ULL) {
+            return i;
+        }
+        if (all_bitboards[on_turn][i] >> position & 1ULL) {
             return i;
         }
     }

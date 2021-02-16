@@ -25,14 +25,14 @@ enum COLOR {
 };
 
 struct Move {
-    int from;
-    int to;
-    int piece_type;
-    int capture_piece_type;
-    bool capture;
-    int promotion;
-    bool castling;
-    bool en_passant;
+    int from = 0;
+    int to = 0;
+    int piece_type = 0;
+    int capture_piece_type = 0;
+    bool capture = false;
+    int promotion = 0;
+    bool castling = false;
+    bool en_passant = false;
 };
 
 class Board {

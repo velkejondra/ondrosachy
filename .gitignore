@@ -109,3 +109,7 @@ build
 
 /Dokumentace/zadani.tex
 /src/sample database
+
+
+# graphviz files
+*.dot
