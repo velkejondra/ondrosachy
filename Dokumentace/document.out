@@ -1,10 +1,14 @@
 \BOOKMARK [0][-]{chapter.1}{\332vod}{}% 1
-\BOOKMARK [0][-]{chapter.2}{Vlastn\355 text pr\341ce}{}% 2
-\BOOKMARK [0][-]{chapter.3}{\332vod}{}% 3
-\BOOKMARK [0][-]{chapter.4}{Popis a struktura \235achov\351ho enginu}{}% 4
-\BOOKMARK [1][-]{section.4.1}{Teorie her}{chapter.4}% 5
-\BOOKMARK [1][-]{section.4.2}{Subkapitola}{chapter.4}% 6
-\BOOKMARK [2][-]{subsection.4.2.1}{Subsubkapitola}{section.4.2}% 7
-\BOOKMARK [0][-]{chapter.5}{Z\341ver}{}% 8
-\BOOKMARK [0][-]{chapter*.3}{Pr\355lohy}{}% 9
-\BOOKMARK [0][-]{appendix.A}{Pr\355loha}{}% 10
+\BOOKMARK [0][-]{chapter.2}{Popis a struktura \235achov\351ho enginu}{}% 2
+\BOOKMARK [1][-]{section.2.1}{Teorie her}{chapter.2}% 3
+\BOOKMARK [1][-]{section.2.2}{Delen\355 \235achov\375ch enginu}{chapter.2}% 4
+\BOOKMARK [1][-]{section.2.3}{Struktura \235achov\351ho enginu}{chapter.2}% 5
+\BOOKMARK [0][-]{chapter.3}{Implementace}{}% 6
+\BOOKMARK [1][-]{section.3.1}{Bitboardy}{chapter.3}% 7
+\BOOKMARK [1][-]{section.3.2}{Generov\341n\355 pohybu}{chapter.3}% 8
+\BOOKMARK [2][-]{subsection.3.2.1}{Debugov\341n\355}{section.3.2}% 9
+\BOOKMARK [1][-]{section.3.3}{Alpha\205beta pruning}{chapter.3}% 10
+\BOOKMARK [2][-]{subsection.3.3.1}{Minimax}{section.3.3}% 11
+\BOOKMARK [0][-]{chapter.4}{Z\341ver}{}% 12
+\BOOKMARK [0][-]{chapter*.3}{Pr\355lohy}{}% 13
+\BOOKMARK [0][-]{appendix.A}{Pr\355loha}{}% 14

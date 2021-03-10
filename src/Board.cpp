@@ -154,13 +154,6 @@ bitboard Board::EnemyPieces() {
     return output;
 }
 
-bitboard Board::AllBlackPieces() {
-    return 0;
-}
-
-bitboard Board::AllWhitePieces() {
-    return 0;
-}
 
 void Board::InitZobrist() {
     for (auto &i : board_zobrist) {

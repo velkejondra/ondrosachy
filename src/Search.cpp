@@ -8,12 +8,16 @@
 #include <climits>
 
 int Search::NegaMax(int depth, Board &board, int alpha = INT_MIN, int beta = INT_MAX) {
+    MoveGenerator gen = MoveGenerator();
+    auto moves = gen.getLegalMoves(board);
+    if (moves.empty()) {
+        return INT_MIN;
+    }
     if (depth == 0) {
         return Eval::evaluate(board);
     }
     int val = INT_MIN;
-    MoveGenerator gen = MoveGenerator();
-    for (auto move : gen.getLegalMoves(board)) {
+    for (auto move : moves) {
         Board nextBoard = board;
         nextBoard.MakeMove(move);
         val = std::max(val, -NegaMax(depth - 1, nextBoard, -beta, -alpha));

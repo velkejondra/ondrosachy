@@ -37,17 +37,9 @@ struct Move {
 
 class Board {
 public:
-    // bitboards
-    //bitmapy bilych kusu
-
     bitboard all_bitboards[2][6]{};
 
-
     // spojene pozice
-    inline bitboard AllWhitePieces();
-
-    inline bitboard AllBlackPieces();
-
     bitboard PiecesOfColor(bool color);
 
     bitboard AllPieces();
@@ -71,7 +63,6 @@ public:
 
     void MakeMove(bool small_castle);
 
-
     void MakeMoveFromPGN(std::string move);
 
     void InitZobrist();
@@ -88,10 +79,6 @@ public:
     bitboard zobrist_hash{};
     int en_passant = -1;
     int last_en_passant = -1;
-
-    std::vector<Move> getLegalMoves();
-
-    std::vector<Move> getPseudoLegalMoves();
 
     bitboard MyPieces();
 

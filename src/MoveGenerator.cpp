@@ -9,7 +9,7 @@
 using namespace std;
 
 
-void MoveGenerator::getKnightAttacks(vector<Move> &vector, Board &board) {
+void MoveGenerator::getKnightAttacks(vector<Move> &moves, Board &board) {
     PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
     bitboard enemy_pieces = board.EnemyPieces();
     bitboard my_pieces = board.MyPieces();
@@ -35,12 +35,12 @@ void MoveGenerator::getKnightAttacks(vector<Move> &vector, Board &board) {
             attacks ^= 1ULL << (to);
             if (enemy_pieces >> to & 1ULL) {
                 // pohyb sebere figurku
-                vector.push_back(Move{from, to, KNIGHT, board.getPieceAt(to), true});
+                moves.push_back(Move{from, to, KNIGHT, board.getPieceAt(to), true});
 
             }
             else {
                 // pohyb nesebere figurku
-                vector.push_back(Move{from, to, KNIGHT});
+                moves.push_back(Move{from, to, KNIGHT});
             }
         }
     }

@@ -4,44 +4,44 @@ The top-level auxiliary file: document.aux
 The style file: czechiso.bst
 Database file #1: zdroje.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 2 entries,
+You've used 7 entries,
             3151 wiz_defined-function locations,
-            665 strings with 5645 characters,
-and the built_in function-call counts, 1233 in all, are:
-= -- 91
-> -- 35
+            686 strings with 6324 characters,
+and the built_in function-call counts, 2621 in all, are:
+= -- 185
+> -- 70
 < -- 5
-+ -- 18
-- -- 10
-* -- 71
-:= -- 139
-add.period$ -- 4
-call.type$ -- 2
-change.case$ -- 8
++ -- 33
+- -- 20
+* -- 120
+:= -- 318
+add.period$ -- 14
+call.type$ -- 7
+change.case$ -- 23
 chr.to.int$ -- 0
-cite$ -- 2
-duplicate$ -- 115
-empty$ -- 105
-format.name$ -- 11
-if$ -- 270
+cite$ -- 7
+duplicate$ -- 249
+empty$ -- 264
+format.name$ -- 21
+if$ -- 573
 int.to.chr$ -- 0
-int.to.str$ -- 2
-missing$ -- 25
-newline$ -- 16
-num.names$ -- 4
-pop$ -- 42
+int.to.str$ -- 7
+missing$ -- 55
+newline$ -- 31
+num.names$ -- 14
+pop$ -- 123
 preamble$ -- 1
-purify$ -- 8
+purify$ -- 23
 quote$ -- 0
-skip$ -- 59
+skip$ -- 115
 stack$ -- 0
-substring$ -- 61
-swap$ -- 78
+substring$ -- 86
+swap$ -- 132
 text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 8
+type$ -- 28
 warning$ -- 0
-while$ -- 8
-width$ -- 3
-write$ -- 27
+while$ -- 18
+width$ -- 8
+write$ -- 66

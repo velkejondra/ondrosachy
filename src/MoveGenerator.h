@@ -24,7 +24,7 @@ public:
 
     void getPseudoLegalMoves(std::vector<Move> &moves, Board &board);
 
-    void getKnightAttacks(std::vector<Move> &vector, Board &board);
+    void getKnightAttacks(std::vector<Move> &moves, Board &board);
 
     void getPawnAttacks(std::vector<Move> &moves, Board &board);
 

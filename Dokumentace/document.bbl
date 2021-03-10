@@ -10,7 +10,29 @@
 
 \bibitem{shannon_number}
 Claude, E.~S.: Programming a Computer for Playing Chess. \emph{Philosophical
-  Magazine, Ser}, ročník~7, �.~41, 1950: str. 314.
+  Magazine, Ser}, ročník~7, č.~41, 1950: str. 314.
+
+\bibitem{bitboards_wiki}
+{Přispěvatelé Chess Programming Wiki}: Bitboards. Dostupné na:
+  \url{https://www.chessprogramming.org/Bitboards}, 2021.
+
+\bibitem{perft}
+{Přispěvatelé Chess Programming Wiki}: Perft. Dostupné na:
+  \url{https://www.chessprogramming.org/Perft}, 2021.
+
+\bibitem{perft_results}
+{Přispěvatelé Chess Programming Wiki}: Perft results. Dostupné na:
+  \url{https://www.chessprogramming.org/Perft_Results}, 2021.
+
+\bibitem{game_tree}
+{Přispěvatelé Wikipedie}: Game tree. Dostupné na:
+  \url{https://en.wikipedia.org/w/index.php?title=Game_tree&oldid=1003093164},
+  2021.
+
+\bibitem{rustad-elliott}
+Rustad-Elliott, R.: Fast Chess Move Generation With Magic Bitboards. Dostupné
+  na
+  \url{https://rhysre.net/fast-chess-move-generation-with-magic-bitboards.html}.
 
 \bibitem{dama}
 Schaeffer, J.; Björnsson, Y.; Kishimoto, A.; aj.: Checkers Is Solved.

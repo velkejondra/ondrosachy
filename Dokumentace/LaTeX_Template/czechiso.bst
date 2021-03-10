@@ -4,11 +4,11 @@
 %%
 %% The original source files were:
 %%
-%% merlin.mbs  (with options: `head,exlang,lang,vonx,nm-rev,jnrlst,aunm-semi,nmlm,x3,m3,atit-u,vnum-nr,volp-sp,jwdpg,pp-last,jwdvol,num-xser,ser-vol,ser-ed,pg-bk,add-pub,isbn,issn,doi,edpar,edby,blk-tit,au-col,�e�tina,pp,and-xcom,xand,eprint,url,url-nl,nfss,,{}')
-%% czech.mbs  (with options: `exlang,lang,vonx,nm-rev,jnrlst,aunm-semi,nmlm,x3,m3,atit-u,vnum-nr,volp-sp,jwdpg,pp-last,jwdvol,num-xser,ser-vol,ser-ed,pg-bk,add-pub,isbn,issn,doi,edpar,edby,blk-tit,au-col,�e�tina,pp,and-xcom,xand,eprint,url,url-nl,nfss,,{}')
-%% merlin.mbs  (with options: `tail,exlang,lang,vonx,nm-rev,jnrlst,aunm-semi,nmlm,x3,m3,atit-u,vnum-nr,volp-sp,jwdpg,pp-last,jwdvol,num-xser,ser-vol,ser-ed,pg-bk,add-pub,isbn,issn,doi,edpar,edby,blk-tit,au-col,�e�tina,pp,and-xcom,xand,eprint,url,url-nl,nfss,,{}')
+%% merlin.mbs  (with options: `head,exlang,lang,vonx,nm-rev,jnrlst,aunm-semi,nmlm,x3,m3,atit-u,vnum-nr,volp-sp,jwdpg,pp-last,jwdvol,num-xser,ser-vol,ser-ed,pg-bk,add-pub,isbn,issn,doi,edpar,edby,blk-tit,au-col,?e?tina,pp,and-xcom,xand,eprint,url,url-nl,nfss,,{}')
+%% czech.mbs  (with options: `exlang,lang,vonx,nm-rev,jnrlst,aunm-semi,nmlm,x3,m3,atit-u,vnum-nr,volp-sp,jwdpg,pp-last,jwdvol,num-xser,ser-vol,ser-ed,pg-bk,add-pub,isbn,issn,doi,edpar,edby,blk-tit,au-col,?e?tina,pp,and-xcom,xand,eprint,url,url-nl,nfss,,{}')
+%% merlin.mbs  (with options: `tail,exlang,lang,vonx,nm-rev,jnrlst,aunm-semi,nmlm,x3,m3,atit-u,vnum-nr,volp-sp,jwdpg,pp-last,jwdvol,num-xser,ser-vol,ser-ed,pg-bk,add-pub,isbn,issn,doi,edpar,edby,blk-tit,au-col,?e?tina,pp,and-xcom,xand,eprint,url,url-nl,nfss,,{}')
 %% ----------------------------------------
-%% *** Styl sna��c� se b�t v souladu s normou ISO 690. Pomoc� latex makebst vytvo�il David Martinek. ***
+%% *** Styl sna??c? se b?t v souladu s normou ISO 690. Pomoc? latex makebst vytvo?il David Martinek. ***
 %% 
 %% Copyright 1994-2004 Patrick W Daly
  % ===============================================================
@@ -232,7 +232,7 @@ FUNCTION {bbl.etal}
 { "aj." }
 
 FUNCTION {bbl.editors}
-{ "edito�i" }
+{ "edito?i" }
 
 FUNCTION {bbl.editor}
 { "editor" }
@@ -241,19 +241,19 @@ FUNCTION {bbl.edby}
 { "editace" }
 
 FUNCTION {bbl.edition}
-{ "vyd�n�" }
+{ "vyd?n?" }
 
 FUNCTION {bbl.volume}
-{ "ročník" }
+{ "ro?n?k" }
 
 FUNCTION {bbl.of}
 { "" }
 
 FUNCTION {bbl.number}
-{ "číslo" }
+{ "??slo" }
 
 FUNCTION {bbl.nr}
-{ "č." }
+{ "?." }
 
 FUNCTION {bbl.in}
 { "in" }
@@ -268,28 +268,28 @@ FUNCTION {bbl.chapter}
 { "kapitola" }
 
 FUNCTION {bbl.techrep}
-{ "Technick� Zpr�va" }
+{ "Technick? Zpr?va" }
 
 FUNCTION {bbl.mthesis}
-{ "Diplomová práce" }
+{ "Diplomov? pr?ce" }
 
 FUNCTION {bbl.phdthesis}
-{ "Dizerta�n� pr�ce" }
+{ "Dizerta?n? pr?ce" }
 
 FUNCTION {bbl.first}
-{ "Prvn�" }
+{ "Prvn?" }
 
 FUNCTION {bbl.second}
-{ "Druh�" }
+{ "Druh?" }
 
 FUNCTION {bbl.third}
-{ "T�et�" }
+{ "T?et?" }
 
 FUNCTION {bbl.fourth}
-{ "�tvrt�" }
+{ "?tvrt?" }
 
 FUNCTION {bbl.fifth}
-{ "P�t�" }
+{ "P?t?" }
 
 FUNCTION {bbl.st}
 { "" }
@@ -305,23 +305,23 @@ FUNCTION {bbl.th}
 
 MACRO {jan} {"Leden"}
 
-MACRO {feb} {"�nor"}
+MACRO {feb} {"?nor"}
 
-MACRO {mar} {"B�ezen"}
+MACRO {mar} {"B?ezen"}
 
 MACRO {apr} {"Duben"}
 
-MACRO {may} {"Kv�ten"}
+MACRO {may} {"Kv?ten"}
 
-MACRO {jun} {"�erven"}
+MACRO {jun} {"?erven"}
 
-MACRO {jul} {"�ervenec"}
+MACRO {jul} {"?ervenec"}
 
 MACRO {aug} {"Srpen"}
 
-MACRO {sep} {"Z���"}
+MACRO {sep} {"Z???"}
 
-MACRO {oct} {"��jen"}
+MACRO {oct} {"??jen"}
 
 MACRO {nov} {"Listopad"}
 

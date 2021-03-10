@@ -99,7 +99,6 @@ build
 /bin/
 
 #latex
-/Dokumentace/LaTeX_Template/
 *.log
 *.aux
 *.lot
@@ -110,6 +109,9 @@ build
 /Dokumentace/zadani.tex
 /src/sample database
 
+*.pygtex
+*.pygstyle
 
 # graphviz files
 *.dot
+/Dokumentace/_minted-document/
