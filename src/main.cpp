@@ -1,4 +1,5 @@
 #include <iostream>
+#include <experimental/filesystem>
 #include "PgnParser.h"
 #include "PrecomputedBitboards.h"
 #include "defs.h"
@@ -6,17 +7,16 @@
 #include "eval.h"
 #include "Search.h"
 #include "MoveGenerator.h"
+
 //#include "debug.h"
 using namespace std;
 
 int main() {
+    PgnParser parser = PgnParser();
+    parser.ParsePgnToFile("/home/velkejondra/repos/chess_gitlab/src/millionbase-2.5.pgn", 14, 1000000);
+    OpeningBook book = OpeningBook("/home/velkejondra/repos/chess_gitlab/src/openingbook.index",
+                                   "/home/velkejondra/repos/chess_gitlab/src/openingbook.data");
 
-    PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
-    cout << BitboardRepresentation(precomp.col_row_mask[CHESS_FILE::ROW_A]);
     Board board = Board();
-    Search search = Search();
-    Move mov = search.IterativeDeepening(3, board);
-
-
-    return 0;
+    auto lol = book.GetPGNMove(board.zobrist_hash);
 }

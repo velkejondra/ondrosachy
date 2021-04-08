@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 struct TableEntry {
-    int depth;
+    int depth_tt;
     Move best_move;
 };
 
@@ -19,10 +19,10 @@ public:
     TranspositionTable() = default;
 
     // vrati bud null pokud zaznam neexistuje, nebo nejlepsí pohyb ktery byl pro pozici minule nalezen
-    TableEntry GetEntry(bitboard hash);
+    TableEntry *GetEntry(bitboard hash);
 
     // vlozi nejlepsi nalezenou pozici pro tento stav
-    TableEntry InserEntry(TableEntry);
+    TableEntry InsertEntry(bitboard zobrist, TableEntry new_entry);
 
     // vycisti tabulku
     void clear();

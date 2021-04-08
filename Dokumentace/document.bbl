@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -8,13 +8,25 @@
 \providecommand{\selectlanguage}[1]{\relax}
 \providecommand{\eprint}[2][]{\url{#2}}
 
+\bibitem{identifier}
+{Apache Software Foundation}: Hadoop.
+\newline\urlprefix\url{https://hadoop.apache.org}
+
 \bibitem{shannon_number}
 Claude, E.~S.: Programming a Computer for Playing Chess. \emph{Philosophical
   Magazine, Ser}, ročník~7, č.~41, 1950: str. 314.
 
+\bibitem{pgn_format}
+Edwards, S.~J.: Portable game notation specification and implementation guide.
+  \emph{Retrieved April}, ročník~4, 1994: str. 2011.
+
 \bibitem{bitboards_wiki}
 {Přispěvatelé Chess Programming Wiki}: Bitboards. Dostupné na:
   \url{https://www.chessprogramming.org/Bitboards}, 2021.
+
+\bibitem{move_ordering}
+{Přispěvatelé Chess Programming Wiki}: cMove Ordering. Dostupné na:
+  \url{https://www.chessprogramming.org/Move_Ordering}, 2021.
 
 \bibitem{perft}
 {Přispěvatelé Chess Programming Wiki}: Perft. Dostupné na:
@@ -37,5 +49,13 @@ Rustad-Elliott, R.: Fast Chess Move Generation With Magic Bitboards. Dostupné
 \bibitem{dama}
 Schaeffer, J.; Björnsson, Y.; Kishimoto, A.; aj.: Checkers Is Solved.
   \emph{Science}, ročník 317, 10 2007: s. 1518--1522.
+
+\bibitem{chess_database}
+Schroder, E.: Perft results. Dostupné na:
+  \url{http://rebel13.nl/download/data.html}, 2021.
+
+\bibitem{zobrist1990new}
+Zobrist, A.~L.: A new hashing method with application for game playing.
+  \emph{ICGA Journal}, ročník~13, č.~2, 1990: s. 69--73.
 
 \end{thebibliography}

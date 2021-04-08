@@ -7,6 +7,7 @@
 
 
 #include "Board.h"
+#include "TranspositionTable.h"
 
 class Search {
 public:
@@ -14,6 +15,7 @@ public:
 
     Move SearchFromRoot(int depth, Board &board);
 
+    TranspositionTable table{};
 
 private:
     int NegaMax(int depth, Board &board, int alpha, int beta);

@@ -115,3 +115,4 @@ build
 # graphviz files
 *.dot
 /Dokumentace/_minted-document/
+/src/millionbase-2.5.pgn

@@ -3,45 +3,48 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: document.aux
 The style file: czechiso.bst
 Database file #1: zdroje.bib
+Warning--entry type for "identifier" isn't style-file defined
+--line 97 of file zdroje.bib
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 7 entries,
+You've used 12 entries,
             3151 wiz_defined-function locations,
-            686 strings with 6324 characters,
-and the built_in function-call counts, 2621 in all, are:
-= -- 185
-> -- 70
-< -- 5
-+ -- 33
-- -- 20
-* -- 120
-:= -- 318
-add.period$ -- 14
-call.type$ -- 7
-change.case$ -- 23
+            710 strings with 6796 characters,
+and the built_in function-call counts, 4432 in all, are:
+= -- 312
+> -- 105
+< -- 10
++ -- 49
+- -- 30
+* -- 203
+:= -- 530
+add.period$ -- 23
+call.type$ -- 12
+change.case$ -- 38
 chr.to.int$ -- 0
-cite$ -- 7
-duplicate$ -- 249
-empty$ -- 264
-format.name$ -- 21
-if$ -- 573
+cite$ -- 12
+duplicate$ -- 433
+empty$ -- 454
+format.name$ -- 31
+if$ -- 971
 int.to.chr$ -- 0
-int.to.str$ -- 7
-missing$ -- 55
-newline$ -- 31
-num.names$ -- 14
-pop$ -- 123
+int.to.str$ -- 12
+missing$ -- 95
+newline$ -- 47
+num.names$ -- 24
+pop$ -- 210
 preamble$ -- 1
-purify$ -- 23
+purify$ -- 38
 quote$ -- 0
-skip$ -- 115
+skip$ -- 194
 stack$ -- 0
-substring$ -- 86
-swap$ -- 132
-text.length$ -- 5
+substring$ -- 156
+swap$ -- 230
+text.length$ -- 10
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 28
+type$ -- 48
 warning$ -- 0
-while$ -- 18
-width$ -- 8
-write$ -- 66
+while$ -- 33
+width$ -- 14
+write$ -- 107
+(There was 1 warning)

@@ -32,7 +32,18 @@ unsigned long long perft(int depth, Board &board) {
 void perft_divide(int depht) {
     Board board = Board();
     MoveGenerator gen = MoveGenerator();
-
+    vector<Move> lmao;
+//    lmao.push_back(gen.getLegalMoves(board)[8]);
+//    board.MakeMove(gen.getLegalMoves(board)[8]);
+//
+//    lmao.push_back(gen.getLegalMoves(board)[0]);
+//    board.MakeMove(gen.getLegalMoves(board)[0]);
+//    lmao.push_back(gen.getLegalMoves(board)[7]);
+//    board.MakeMove(gen.getLegalMoves(board)[7]);
+//    lmao.push_back(gen.getLegalMoves(board)[7]);
+//    board.MakeMove(gen.getLegalMoves(board)[7]);
+//    lmao.push_back(gen.getLegalMoves(board)[14]);
+//    board.MakeMove(gen.getLegalMoves(board)[14]);
     for (auto move : gen.getLegalMoves(board)) {
         Board next_board = board;
         next_board.MakeMove(move);
@@ -49,12 +60,13 @@ static int INDEX = 0;
 
 TEST_CASE("Perft test", "[perft]") {
     Board board = Board();
+
     REQUIRE(perft(1, board) == 20);
     REQUIRE(perft(2, board) == 400);
     REQUIRE(perft(3, board) == 8902);
     REQUIRE(perft(4, board) == 197281);
     //slow
-//    REQUIRE(perft(5, board) == 4865609);
-//    REQUIRE(perft(6, board) == 119060324);
-//    perft_divide(2);
+    REQUIRE(perft(5, board) == 4865609);
+    REQUIRE(perft(6, board) == 119060324);
+//    perft_divide(1);
 }

@@ -7,8 +7,13 @@
 \BOOKMARK [1][-]{section.3.1}{Bitboardy}{chapter.3}% 7
 \BOOKMARK [1][-]{section.3.2}{Generov\341n\355 pohybu}{chapter.3}% 8
 \BOOKMARK [2][-]{subsection.3.2.1}{Debugov\341n\355}{section.3.2}% 9
-\BOOKMARK [1][-]{section.3.3}{Alpha\205beta pruning}{chapter.3}% 10
+\BOOKMARK [1][-]{section.3.3}{Prohled\341v\341n\355 pozic}{chapter.3}% 10
 \BOOKMARK [2][-]{subsection.3.3.1}{Minimax}{section.3.3}% 11
-\BOOKMARK [0][-]{chapter.4}{Z\341ver}{}% 12
-\BOOKMARK [0][-]{chapter*.3}{Pr\355lohy}{}% 13
-\BOOKMARK [0][-]{appendix.A}{Pr\355loha}{}% 14
+\BOOKMARK [2][-]{subsection.3.3.2}{Alpha-Beta pruning}{section.3.3}% 12
+\BOOKMARK [1][-]{section.3.4}{Transpozicn\355 tabulka}{chapter.3}% 13
+\BOOKMARK [1][-]{section.3.5}{Datab\341ze otev\355rac\355ch pohybu}{chapter.3}% 14
+\BOOKMARK [2][-]{subsection.3.5.1}{PGN form\341t}{section.3.5}% 15
+\BOOKMARK [0][-]{chapter.4}{GUI}{}% 16
+\BOOKMARK [1][-]{section.4.1}{Z\341ver}{chapter.4}% 17
+\BOOKMARK [0][-]{chapter*.5}{Pr\355lohy}{}% 18
+\BOOKMARK [0][-]{appendix.A}{Pr\355loha}{}% 19

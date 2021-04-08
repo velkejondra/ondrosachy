@@ -9,6 +9,7 @@ typedef unsigned long long bitboard;
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include "PrecomputedBitboards.h"
 
 enum PIECE {
@@ -25,6 +26,10 @@ enum COLOR {
 };
 
 struct Move {
+    bool operator==(const Move &rhs) const;
+
+    bool operator!=(const Move &rhs) const;
+
     int from = 0;
     int to = 0;
     int piece_type = 0;
@@ -33,6 +38,7 @@ struct Move {
     int promotion = 0;
     bool castling = false;
     bool en_passant = false;
+
 };
 
 class Board {
@@ -42,7 +48,6 @@ public:
     // spojene pozice
     bitboard PiecesOfColor(bool color);
 
-    bitboard AllPieces();
 
     bitboard board_zobrist[2][6][64]{};
     bitboard castling_zobrist[4]{};
@@ -59,10 +64,6 @@ public:
 
     bool InCheck(int color);
 
-    void UndoMove(Move move);
-
-    void MakeMove(bool small_castle);
-
     void MakeMoveFromPGN(std::string move);
 
     void InitZobrist();
@@ -73,9 +74,7 @@ public:
 
     int getPieceAt(int position);
 
-    std::string last_destination;
     Move last_move{};
-    std::vector<Move> last_moves;
     bitboard zobrist_hash{};
     int en_passant = -1;
     int last_en_passant = -1;
@@ -86,7 +85,26 @@ public:
 
     bitboard GetAllBitboardAttacks(bool color);
 
-    std::string GetMoveNotation();
+    std::string GetMoveNotation() const;
+
+    bitboard _all_pieces = 0ULL;
+    bitboard _my_pieces = 0ULL;
+    bitboard _enemy_pieces = 0ULL;
+private:
+
+    void CalculateAll();
+
+    void CalculateWhitePieces();
+
+    void CalculateBlackPieces();
+
+
+    void AddPiece(int piece, int pos, bool color);
+
+    bitboard white_pieces;
+    bitboard black_pieces;
+
+    void RemovePiece(int piece, int pos, bool color);
 };
 
 

@@ -47,6 +47,7 @@ void MoveGenerator::getKnightAttacks(vector<Move> &moves, Board &board) {
 }
 
 void MoveGenerator::getPseudoLegalMoves(std::vector<Move> &moves, Board &board) {
+    moves.reserve(200);
     getPawnAttacks(moves, board);
     getKnightAttacks(moves, board);
     getBishopAttacks(moves, board);
@@ -172,7 +173,7 @@ void MoveGenerator::getPawnAttacks(vector<Move> &moves, Board &board) {
 void MoveGenerator::getBishopAttacks(vector<Move> &vector, Board &board) {
     PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
     bitboard bishops = board.all_bitboards[board.on_turn][BISHOP];
-    bitboard all_pieces = board.AllPieces();
+    bitboard all_pieces = board._all_pieces;
     bitboard enemy_pieces = board.EnemyPieces();
     bitboard my_pieces = board.MyPieces();
 
@@ -208,7 +209,7 @@ void MoveGenerator::getBishopAttacks(vector<Move> &vector, Board &board) {
 void MoveGenerator::getRookAttacks(vector<Move> &vector, Board &board) {
     PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
     bitboard rooks = board.all_bitboards[board.on_turn][ROOK];
-    bitboard all_pieces = board.AllPieces();
+    bitboard all_pieces = board._all_pieces;
     bitboard enemy_pieces = board.EnemyPieces();
     bitboard my_pieces = board.MyPieces();
 
@@ -243,7 +244,7 @@ void MoveGenerator::getRookAttacks(vector<Move> &vector, Board &board) {
 
 void MoveGenerator::getQueenAttacks(vector<Move> &vector, Board &board) {
     PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
-    bitboard all_pieces = board.AllPieces();
+    bitboard all_pieces = board._all_pieces;
     bitboard my_pieces = board.MyPieces();
     bitboard enemy_pieces = board.EnemyPieces();
     bitboard queens = board.all_bitboards[board.on_turn][QUEEN];

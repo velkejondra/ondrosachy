@@ -10,6 +10,7 @@
 #include "../Search.h"
 #include <filesystem>
 #include "defs.h"
+#include "../PgnParser.h"
 
 #include <thread>
 #include <unordered_set>
@@ -28,7 +29,6 @@ static const olc::Pixel light_magenta = olc::Pixel(220, 167, 250);
 // pokud je engine narade ulozi svuj nejlepsi pohyb do promene a nastavi, ze je na rade hrac
 // vice vlaken pouzivam, protoze by jinak GUI bylo neresponzivni behem hledani pohybu
 bool on_turn = HUMAN;
-Move last_move;
 
 // za jakou barvu hrajeme
 bool side = WHITE;
@@ -41,7 +41,8 @@ enum Mode {
     COMP, CHOOSING_FROM, CHOOSING_TO
 };
 
-Mode mod = CHOOSING_FROM;
+std::atomic<int> mod = CHOOSING_FROM;
+
 
 Move human_move;
 
@@ -62,7 +63,8 @@ public:
 public:
     bool OnUserCreate() override {
         SetPixelMode(olc::Pixel::MASK); // Dont draw pixels which have any transparency
-        cout << std::experimental::filesystem::current_path() << std::endl;
+//        std::filesystem::path cwd = std::filesystem::current_path() / "filename.txt";
+//        std::ofstream file(cwd.string()); file.close();
         sprTile[BLACK][PAWN] = std::make_unique<olc::Sprite>("gui/imgs/pawn1.png");
         sprTile[WHITE][PAWN] = std::make_unique<olc::Sprite>("gui/imgs/pawn.png");
         sprTile[BLACK][KNIGHT] = std::make_unique<olc::Sprite>("gui/imgs/knight1.png");
@@ -82,6 +84,7 @@ public:
 
     void DrawChessboard(bool side) {
         olc::Pixel color;
+        side = !side;
         for (int row = 0; row < 8; ++row) {
             side = !side;
             for (int col = 0; col < 8; ++col) {
@@ -104,7 +107,7 @@ public:
                     position = __builtin_ffsll(pieces);
                     position--;
                     pieces ^= 1ULL << position;
-                    DrawSprite(olc::vi2d(position % 8, position / 8) * 42, sprTile[color][piece].get());
+                    DrawSprite(olc::vi2d(position % 8, 7 - position / 8) * 42, sprTile[color][piece].get());
                 }
             }
         }
@@ -118,7 +121,7 @@ public:
             if (move.from == human_move.from) {
                 legal_moves_to.insert(move.to);
                 FillRect(move.to % 8 * RECT_SIZE,
-                         move.to / 8 * RECT_SIZE,
+                         (7 - move.to / 8) * RECT_SIZE,
                          RECT_SIZE, RECT_SIZE, light_magenta);
             }
         }
@@ -135,8 +138,9 @@ public:
                 if (mouse_pos.y > 0 && mouse_pos.y < 8 * RECT_SIZE) {
                     // vybrani figurky na pohyb
                     if (mod == CHOOSING_FROM) {
-                        if (1ULL << ((mouse_pos.y / RECT_SIZE * 8) + mouse_pos.x / RECT_SIZE) & board.MyPieces()) {
-                            human_move.from = (mouse_pos.y / RECT_SIZE * 8) + mouse_pos.x / RECT_SIZE;
+                        if (1ULL << (((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE) &
+                            board.MyPieces()) {
+                            human_move.from = ((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE;
                             human_move.piece_type = board.getPieceAt(human_move.from);
                             mod = CHOOSING_TO;
                             DrawDestinations();
@@ -144,14 +148,14 @@ public:
                     }
                         // vybrani ciloveho mista na pohyb figurkou
                     else if (mod == CHOOSING_TO) {
-                        if (legal_moves_to.count(((mouse_pos.y / RECT_SIZE * 8) + mouse_pos.x / RECT_SIZE))) {
-                            human_move.to = (mouse_pos.y / RECT_SIZE * 8) + mouse_pos.x / RECT_SIZE;
+                        if (legal_moves_to.count((((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE))) {
+                            human_move.to = ((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE;
                             if (board.getPieceAt(human_move.to) != -1) {
                                 human_move.capture = true;
                                 human_move.capture_piece_type = board.getPieceAt(human_move.to);
                             }
-                            if (human_move.piece_type == PAWN && abs(human_move.from - human_move.to) % 8 != 0 &&
-                                abs(human_move.to - human_move.from) > 9) {
+                            if (human_move.piece_type == PAWN && board.getPieceAt(human_move.to) == -1 &&
+                                abs(human_move.to - human_move.from) % 8 != 0) {
                                 human_move.capture = true;
                                 human_move.en_passant = true;
                                 human_move.capture_piece_type = PAWN;
@@ -161,14 +165,15 @@ public:
                             }
                             board.MakeMove(human_move);
                             human_move = Move{};
+                            DrawChessboard(side);
+                            DrawPieces();
                             mod = COMP;
                         }
                         else {
-
                             mod = CHOOSING_FROM;
+                            DrawChessboard(side);
+                            DrawPieces();
                         }
-                        DrawChessboard(side);
-                        DrawPieces();
 
                     }
                 }
@@ -181,23 +186,32 @@ public:
 
 [[noreturn]] void chess_bot(GUI_Chess &gui, bool turn = on_turn) {
     Search search;
+    OpeningBook book = OpeningBook("openingbook.index", "openingbook.data");
     while (true) {
         if (mod == COMP) {
             if (gen.getLegalMoves(board).empty()) {
-                cout << "sach mat vyhral hrac";
+                cout << "sach mat vyhral hrac\n";
             }
             else {
-                Move bot_move = search.IterativeDeepening(4, board);
-                board.MakeMove(bot_move);
+                string pgn_move = book.GetPGNMove(board.zobrist_hash);
+                if (!pgn_move.empty()) {
+                    board.MakeMoveFromPGN(pgn_move);
+                }
+                else {
+                    Move bot_move = search.IterativeDeepening(4, board);
+                    board.MakeMove(bot_move);
+                }
                 gui.DrawChessboard(side);
                 gui.DrawPieces();
                 mod = CHOOSING_FROM;
+//                cout << board.zobrist_hash << endl;
             }
         }
+        this_thread::sleep_for(100ms);
     }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     GUI_Chess maker;
     std::thread bot_thread(chess_bot, std::ref(maker), on_turn);
     if (maker.Construct(336, 336, 2, 2, false, true)) {
