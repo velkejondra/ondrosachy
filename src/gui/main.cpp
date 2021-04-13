@@ -19,16 +19,8 @@ typedef unsigned long long bitboard;
 
 const int RECT_SIZE = 42;
 
-enum TURN {
-    HUMAN, AI
-};
-
 static const olc::Pixel light_magenta = olc::Pixel(220, 167, 250);
 
-// promene pro multithreading
-// pokud je engine narade ulozi svuj nejlepsi pohyb do promene a nastavi, ze je na rade hrac
-// vice vlaken pouzivam, protoze by jinak GUI bylo neresponzivni behem hledani pohybu
-bool on_turn = HUMAN;
 
 // za jakou barvu hrajeme
 bool side = WHITE;
@@ -37,12 +29,13 @@ bool side = WHITE;
 // generator pohybu
 MoveGenerator gen = MoveGenerator();
 
+// urcuje stav hry
+//jestli hráč vybírá pohyb nebo hraje počítač
 enum Mode {
     COMP, CHOOSING_FROM, CHOOSING_TO
 };
 
-std::atomic<int> mod = CHOOSING_FROM;
-
+std::atomic<int> mod = {CHOOSING_FROM};
 
 Move human_move;
 
@@ -63,8 +56,6 @@ public:
 public:
     bool OnUserCreate() override {
         SetPixelMode(olc::Pixel::MASK); // Dont draw pixels which have any transparency
-//        std::filesystem::path cwd = std::filesystem::current_path() / "filename.txt";
-//        std::ofstream file(cwd.string()); file.close();
         sprTile[BLACK][PAWN] = std::make_unique<olc::Sprite>("gui/imgs/pawn1.png");
         sprTile[WHITE][PAWN] = std::make_unique<olc::Sprite>("gui/imgs/pawn.png");
         sprTile[BLACK][KNIGHT] = std::make_unique<olc::Sprite>("gui/imgs/knight1.png");
@@ -132,22 +123,22 @@ public:
 
     bool OnUserUpdate(float fElapsedTime) override {
         // zkontoluje vstup uzivatele
-        if (GetMouse(0).bReleased && mod != COMP) {
+        if (GetMouse(0).bReleased && mod.load() != COMP) {
             auto mouse_pos = GetMousePos();
             if (mouse_pos.x > 0 && mouse_pos.x < 8 * RECT_SIZE) {
                 if (mouse_pos.y > 0 && mouse_pos.y < 8 * RECT_SIZE) {
                     // vybrani figurky na pohyb
-                    if (mod == CHOOSING_FROM) {
+                    if (mod.load() == CHOOSING_FROM) {
                         if (1ULL << (((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE) &
                             board.MyPieces()) {
                             human_move.from = ((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE;
                             human_move.piece_type = board.getPieceAt(human_move.from);
-                            mod = CHOOSING_TO;
+                            mod.store(CHOOSING_TO);
                             DrawDestinations();
                         }
                     }
                         // vybrani ciloveho mista na pohyb figurkou
-                    else if (mod == CHOOSING_TO) {
+                    else if (mod.load() == CHOOSING_TO) {
                         if (legal_moves_to.count((((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE))) {
                             human_move.to = ((7 - mouse_pos.y / RECT_SIZE) * 8) + mouse_pos.x / RECT_SIZE;
                             if (board.getPieceAt(human_move.to) != -1) {
@@ -167,10 +158,10 @@ public:
                             human_move = Move{};
                             DrawChessboard(side);
                             DrawPieces();
-                            mod = COMP;
+                            mod.store(COMP);
                         }
                         else {
-                            mod = CHOOSING_FROM;
+                            mod.store(CHOOSING_FROM);
                             DrawChessboard(side);
                             DrawPieces();
                         }
@@ -184,11 +175,11 @@ public:
     }
 };
 
-[[noreturn]] void chess_bot(GUI_Chess &gui, bool turn = on_turn) {
+[[noreturn]] void chess_bot(GUI_Chess &gui) {
     Search search;
     OpeningBook book = OpeningBook("openingbook.index", "openingbook.data");
     while (true) {
-        if (mod == COMP) {
+        if (mod.load() == COMP) {
             if (gen.getLegalMoves(board).empty()) {
                 cout << "sach mat vyhral hrac\n";
             }
@@ -203,17 +194,17 @@ public:
                 }
                 gui.DrawChessboard(side);
                 gui.DrawPieces();
-                mod = CHOOSING_FROM;
+                mod.store(CHOOSING_FROM);
 //                cout << board.zobrist_hash << endl;
             }
         }
-        this_thread::sleep_for(100ms);
+        this_thread::yield();
     }
 }
 
 int main(int argc, char *argv[]) {
     GUI_Chess maker;
-    std::thread bot_thread(chess_bot, std::ref(maker), on_turn);
+    std::thread bot_thread(chess_bot, std::ref(maker));
     if (maker.Construct(336, 336, 2, 2, false, true)) {
         maker.Start();
     }

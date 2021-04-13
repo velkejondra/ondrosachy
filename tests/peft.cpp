@@ -67,6 +67,6 @@ TEST_CASE("Perft test", "[perft]") {
     REQUIRE(perft(4, board) == 197281);
     //slow
     REQUIRE(perft(5, board) == 4865609);
-    REQUIRE(perft(6, board) == 119060324);
+//    REQUIRE(perft(6, board) == 119060324);
 //    perft_divide(1);
 }

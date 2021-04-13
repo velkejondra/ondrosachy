@@ -11,15 +11,21 @@ TableEntry *TranspositionTable::GetEntry(bitboard hash) {
     else { return nullptr; }
 }
 
-TableEntry TranspositionTable::InsertEntry(bitboard zobrist, TableEntry new_entry) {
-    TableEntry *entry = GetEntry(zobrist);
-    if (entry != nullptr) {
-        if (entry->depth_tt < new_entry.depth_tt) {
-            table[zobrist] = new_entry;
+void TranspositionTable::InsertEntry(bitboard zobrist, TableEntry new_entry) {
+    auto entry = table.insert(std::make_pair(zobrist, new_entry));
+    if (!entry.second) {
+        if (new_entry.depth_tt >= entry.first->second.depth_tt) {
+            entry.first->second = new_entry;
         }
     }
-    else {
-        table[zobrist] = new_entry;
-    }
+}
+
+void TranspositionTable::clear() {
+    table.clear();
+
+}
+
+int TranspositionTable::size() {
+    return table.size();
 }
 

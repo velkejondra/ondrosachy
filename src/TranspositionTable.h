@@ -22,10 +22,12 @@ public:
     TableEntry *GetEntry(bitboard hash);
 
     // vlozi nejlepsi nalezenou pozici pro tento stav
-    TableEntry InsertEntry(bitboard zobrist, TableEntry new_entry);
+    void InsertEntry(bitboard zobrist, TableEntry new_entry);
 
     // vycisti tabulku
     void clear();
+
+    int size();
 
 
 private:

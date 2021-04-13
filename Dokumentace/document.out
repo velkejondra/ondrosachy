@@ -3,17 +3,21 @@
 \BOOKMARK [1][-]{section.2.1}{Teorie her}{chapter.2}% 3
 \BOOKMARK [1][-]{section.2.2}{Delen\355 \235achov\375ch enginu}{chapter.2}% 4
 \BOOKMARK [1][-]{section.2.3}{Struktura \235achov\351ho enginu}{chapter.2}% 5
-\BOOKMARK [0][-]{chapter.3}{Implementace}{}% 6
-\BOOKMARK [1][-]{section.3.1}{Bitboardy}{chapter.3}% 7
-\BOOKMARK [1][-]{section.3.2}{Generov\341n\355 pohybu}{chapter.3}% 8
-\BOOKMARK [2][-]{subsection.3.2.1}{Debugov\341n\355}{section.3.2}% 9
-\BOOKMARK [1][-]{section.3.3}{Prohled\341v\341n\355 pozic}{chapter.3}% 10
-\BOOKMARK [2][-]{subsection.3.3.1}{Minimax}{section.3.3}% 11
-\BOOKMARK [2][-]{subsection.3.3.2}{Alpha-Beta pruning}{section.3.3}% 12
-\BOOKMARK [1][-]{section.3.4}{Transpozicn\355 tabulka}{chapter.3}% 13
-\BOOKMARK [1][-]{section.3.5}{Datab\341ze otev\355rac\355ch pohybu}{chapter.3}% 14
-\BOOKMARK [2][-]{subsection.3.5.1}{PGN form\341t}{section.3.5}% 15
-\BOOKMARK [0][-]{chapter.4}{GUI}{}% 16
-\BOOKMARK [1][-]{section.4.1}{Z\341ver}{chapter.4}% 17
-\BOOKMARK [0][-]{chapter*.5}{Pr\355lohy}{}% 18
-\BOOKMARK [0][-]{appendix.A}{Pr\355loha}{}% 19
+\BOOKMARK [1][-]{section.2.4}{Historie \227achov\375ch enginu}{chapter.2}% 6
+\BOOKMARK [0][-]{chapter.3}{Implementace}{}% 7
+\BOOKMARK [1][-]{section.3.1}{Bitboardy}{chapter.3}% 8
+\BOOKMARK [1][-]{section.3.2}{Generov\341n\355 pohybu}{chapter.3}% 9
+\BOOKMARK [2][-]{subsection.3.2.1}{Debugov\341n\355}{section.3.2}% 10
+\BOOKMARK [1][-]{section.3.3}{Prohled\341v\341n\355 pozic}{chapter.3}% 11
+\BOOKMARK [2][-]{subsection.3.3.1}{Minimax}{section.3.3}% 12
+\BOOKMARK [2][-]{subsection.3.3.2}{Alpha-Beta pruning}{section.3.3}% 13
+\BOOKMARK [1][-]{section.3.4}{Evaluace}{chapter.3}% 14
+\BOOKMARK [1][-]{section.3.5}{Transpozicn\355 tabulka}{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.6}{Datab\341ze otev\355rac\355ch pohybu}{chapter.3}% 16
+\BOOKMARK [2][-]{subsection.3.6.1}{PGN form\341t}{section.3.6}% 17
+\BOOKMARK [0][-]{chapter.4}{GUI}{}% 18
+\BOOKMARK [1][-]{section.4.1}{N\341vod na pou\236it\355}{chapter.4}% 19
+\BOOKMARK [0][-]{chapter.5}{Optimalizov\341n\355}{}% 20
+\BOOKMARK [0][-]{chapter.6}{Z\341ver}{}% 21
+\BOOKMARK [0][-]{chapter*.6}{Pr\355lohy}{}% 22
+\BOOKMARK [0][-]{appendix.A}{Pr\355lohy}{}% 23

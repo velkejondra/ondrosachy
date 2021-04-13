@@ -8,24 +8,31 @@
 \providecommand{\selectlanguage}[1]{\relax}
 \providecommand{\eprint}[2][]{\url{#2}}
 
-\bibitem{identifier}
-{Apache Software Foundation}: Hadoop.
-\newline\urlprefix\url{https://hadoop.apache.org}
-
 \bibitem{shannon_number}
 Claude, E.~S.: Programming a Computer for Playing Chess. \emph{Philosophical
   Magazine, Ser}, ročník~7, č.~41, 1950: str. 314.
 
+\bibitem{olc_engine}
+{David Barr}: olc::PixelGameEngine. Dostupné na: \url{OneLoneCoder.com}.
+
 \bibitem{pgn_format}
 Edwards, S.~J.: Portable game notation specification and implementation guide.
   \emph{Retrieved April}, ročník~4, 1994: str. 2011.
+
+\bibitem{flame_graphs}
+Gregg, B.: Dostupné na: \url{http://www.brendangregg.com/flamegraphs.html},
+  2021.
+
+\bibitem{alpha_beta}
+{Přispěvatelé Chess Programming Wiki}: Alpha-Beta. Dostupné na:
+  \url{https://www.chessprogramming.org/Alpha-Beta}, 2021.
 
 \bibitem{bitboards_wiki}
 {Přispěvatelé Chess Programming Wiki}: Bitboards. Dostupné na:
   \url{https://www.chessprogramming.org/Bitboards}, 2021.
 
 \bibitem{move_ordering}
-{Přispěvatelé Chess Programming Wiki}: cMove Ordering. Dostupné na:
+{Přispěvatelé Chess Programming Wiki}: Move Ordering. Dostupné na:
   \url{https://www.chessprogramming.org/Move_Ordering}, 2021.
 
 \bibitem{perft}
@@ -41,6 +48,12 @@ Edwards, S.~J.: Portable game notation specification and implementation guide.
   \url{https://en.wikipedia.org/w/index.php?title=Game_tree&oldid=1003093164},
   2021.
 
+\bibitem{evolution_graph}
+Roeder, O.: Chess's New Best Player Is A Fearless, Swashbuckling Algorithm.
+  Dostupné na
+  \url{https://fivethirtyeight.com/features/chesss-new-best-player-is-a-fearless-swashbuckling-algorithm/},
+  1 2018.
+
 \bibitem{rustad-elliott}
 Rustad-Elliott, R.: Fast Chess Move Generation With Magic Bitboards. Dostupné
   na
@@ -53,6 +66,10 @@ Schaeffer, J.; Björnsson, Y.; Kishimoto, A.; aj.: Checkers Is Solved.
 \bibitem{chess_database}
 Schroder, E.: Perft results. Dostupné na:
   \url{http://rebel13.nl/download/data.html}, 2021.
+
+\bibitem{stockfish_nnue}
+Yang, D.: Introducing NNUE Evaluation. Dostupné na
+  \url{https://stockfishchess.org/blog/2020/introducing-nnue-evaluation/}.
 
 \bibitem{zobrist1990new}
 Zobrist, A.~L.: A new hashing method with application for game playing.

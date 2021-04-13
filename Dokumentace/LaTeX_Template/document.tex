@@ -5,6 +5,7 @@
 \usepackage{numprint}
 \npthousandsep{\,}
 \usepackage[draft,nosingleletter]{impnattypo}
+\usepackage[bottom]{footmisc}
 
 
 \newenvironment{absolutelynopagebreak}
@@ -46,9 +47,11 @@ It aslo contains GUI with guide how to use it, so everyone can easily play again
 
 
 \chapter{Úvod}
-Tato maturitní práce představuje můj šachový engine a popisuje různé techniky a algoritmy používané v~šachových enginech.
+Tato maturitní práce představuje můj šachový engine a a jak jsem ho vytvořil.
+Budu se snažit popsat různé techniky a alogoritmi, které šachové enginy využívají.
 
 V~této práci nebudu popisovat pravidla šachů, budu počítat s~vaší znalostí pravidel.
+Také nebudu popisovat základní datové struktury, nebo algoritmi jako je binární vyhledávání nebo hashmapa.
 
 
 \chapter{Popis a struktura šachového enginu}
@@ -60,14 +63,8 @@ V~této práci nebudu popisovat pravidla šachů, budu počítat s~vaší znalos
 Šachy jsou stálé nevyřešená hra tzn. neví se jak vypadá bezchybná hra.
 Jsou nevyřešené, protože počet možných pozic je enormní.
 Už jenom po třech pohybech je \numprint{8902} možných variant hry.
-Pro představu jsem vygeneroval graf pomocí programu Graphviz, který ukazuje jak se hra po třech tazích větví.
+Pro představu jsem vygeneroval graf pomocí programu Graphviz\cite{graphviz}, který ukazuje jak se hra po třech tazích větví.
 Viz obr.~\ref{fig:strom_tahu}
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.3]{images/graph.resized.jpg}
-    \caption{větvění šachů po třech pohyběch}
-    \label{fig:strom_tahu}
-\end{figure}
 
 
 Průměrný počet pohybů ve všech situací je přibližně 35,
@@ -93,17 +90,16 @@ Pro zajímavost dáma má přibližně $5*10^{20}$ variací her a byla vyřešen
         \caption{herní strom piškvorek~\cite{game_tree}}
         \label{fig:game_tree}
     \end{figure}
-
 \end{flushleft}
 
 
 \section{Dělení šachových enginů}
-V~dnešní době existují v~podstatě dva druhy šachových botů.
+Zjednodušeně se dají šachové enginy rozdělit do dvou skupin.
 \begin{itemize}
     \item Šachový bot založený na alfa-beta vyhledávání
     \begin{itemize}
         \item Šachový engine prochází rekurzivně herní strom do určité hloubky a na konečných uzlech stromu zhodnotí pozici.
-        \item Hodnocení pozic je děláno funkcí vytvořenou programátorem a nedostatky evaluační funkce jsou dohnány prohledáváním spousty pozic do velké hloubky.
+        \item Hodnocení pozic je děláno funkcí vytvořenou programátorem a nedostatky evaluační funkce jsou doháňeny prohledáváním spousty pozic do velké hloubky.
         \item Detaily budou v~kapitole~\ref{sec:alpha–beta-pruning}
     \end{itemize}
     \item Šachový bot založený na neuronových sítí a prohledávání stromu metodou Monte Carlo
@@ -142,11 +138,33 @@ Můj šachový engine bude založen na alfa-beta vyhledávání, takže budu pop
     \item Evaluace pozic
     \begin{itemize}
         \item Hodnotí pozici podle hodnoty, pozice a struktury figurek.
-        \item Klíčová pro chování šachového enginu.
-        \item Na základě ní se rozhoduje v~prohledávání pozic.
+        \item Klíčová pro chování šachového enginu, protože na základě ní se rozhoduje v prohledávání pozic.
+        \item Detaily v kapitole~\ref{evaluace}
     \end{itemize}
-    \item Prohledávací
+    \item Třída na prohledávání pohybů
+    \begin{itemize}
+        \item Prohledává strom hry a vrací nejlepší nalezený pohyb.
+        \item
+    \end{itemize}
 \end{itemize}
+
+
+\section{Historie Šachových enginů}
+První plně funkční šachové enginy se začaly objevovat v 60.\ letech minulého století.
+Algoritmy pro šachové enginy už existovali dřív, ale jejich použití bylo bržděno tehdejším hardwarem.
+Už v 50.\ letech minulého století se znali všechny algoritmy, aby mohl být stvořen použitelný šachový engine.
+Sílá šachových enginů poté prudce rostla zaprvé kvůli Mooreově zákonu\footnote{Vypozorovaný zákon, že každé dva roky se zdvojnásobí hustota tranzistorů v integrovaném obvodu.} a zadruhé díky zlepšování šachových algoritmů.
+V obr.~\ref{fig:evolution_graph} vidíme vývoj Elo\footnote{Statistické ohodnocení výkonnosti hráče} hodnocení šachových enginů.
+Mezi největší inovace za poslední léta patří vydání AlphaZero, které vneslo do dnešních šachových enginů neuronové sítě.
+Už i tradiční šachový engine jako je Stockfish začal používat na hodnocení pozic neronovými sítě a při vydání této změny získal více než 80 Elo bodů.\cite{stockfish_nnue}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{images/engine_evolution}
+    \caption{Vývoj Ela šachových enginů\cite{evolution_graph}}
+    \label{fig:evolution_graph}
+\end{figure}
 
 
 \chapter{Implementace}\label{ch:implementace}
@@ -159,7 +177,7 @@ Bitboard je 64 bitové číslo.
 Každá pozice bitu koresponduje s~pozicí na herní ploše.
 Pokud je pozice na herní ploše zabrána, tak je korespondující bit v~bitboardu nastaven na 1.
 Aby se dali rozlišit jednotlivé figurky, je třeba udržovat v~paměti bitboard pro každý druh a barvu figurek.
-Viz. ilustrační obrázek \ref{fig:bitboard}
+Viz ilustrační obrázek \ref{fig:bitboard}
 Důvod proč se využívají bitboardy je kvůli rychlosti generování pohybů.
 Například u~generování pohybů pro koně jsme schopni si pro každou pozici předpočítat možné pohyby koně.
 Také můžeme na bitboardy používat logické operace, takže můžeme například všechny pěšáky posunout o~8 bitů doprava (pohyb nahoru) v~jednom clock cyclu.
@@ -401,12 +419,10 @@ Poté jsem jenom pomocí c++ knihovny Catch2 porovnal hodnoty.
 
 
 \section{Prohledávání pozic}\label{sec:alpha–beta-pruning}
-Alfa beta prunning je metoda na zvolení nejlepšího pohybu ve stromu pohybů a odřezávání nepotřebných větví .
-Je to vylepšení algoritmu minimax.
 
 \subsection{Minimax}
 Minimax algoritmus rekurzivně projde herní strom do nějaké hloubky a na posledním uzlu vrátí evaluaci pozice.
-Při vracení rekurze vždycky porovnám všechny potomky pozice a vyberu tu nejvýhodnější pro hráče právě na tahu.
+Při vracení rekurze porovnám všechny potomky pozice a vyberu tu nejvýhodnější pro hráče právě na tahu.
 
 Takhle vypadá vygenerovaný minimax strom, který ještě nemá ohodnoceny poslední uzly.~\ref{fig:minimax_tree}
 
@@ -438,7 +454,8 @@ Podle toho poté vybereme nejlepší pohyb.\ref{fig:minimax_tree_full}
 
 \subsection{Alpha-Beta pruning}\label{subsec:alha-beta-pruning}
 Alpha-Beta pruning je vylepšení na algoritmu minimax.
-Jde o~to, že není třeba vyhodnocovat všechny konečné uzly, protože při postupném vyhodnocování stromu zjistíme, že do některých větví se nikdy nemůžeme dostat za perfektního hraní nepřítele. Viz obr.\ref{fig:alpha_beta_full}
+Jde o~to, že není třeba vyhodnocovat všechny konečné uzly, protože při postupném vyhodnocování stromu zjistíme, že do některých větví se nikdy nemůžeme dostat za perfektního hraní nepřítele.
+Viz obr.\ref{fig:alpha_beta_full}
 Abychom odřízli co nejvíce takovýchto větví, je klíčové pořadí pohybů.
 Proto existují jsou různé techniky jak seřadit pohyby, aby nejvíce nadějné pohyby byli prozkoumány jako první.
 Například pohyb z~transpoziční tabulky, sebrání nejcennější figurky nejméně cennou figurky a spoustu další heuristik pro dobré seřazení pohybů.\cite{move_ordering}
@@ -451,6 +468,51 @@ Například pohyb z~transpoziční tabulky, sebrání nejcennější figurky nej
     \caption{Ohodnocený strom pomocí alfa-beta pruningu. Prázdné uzly byli ořezány, jelikož je nebylo třeba prohledávat}
     \label{fig:alpha_beta_full}
 \end{figure}
+
+
+\section{Evaluace}
+Dobrá evaluační funkce je klíčová pro šachový engine, protože na základě ní rozhoduje jaké pozice jsou dobré.
+Evaluační funkce se může skládat z mnoha heuristik.
+Nejzákladnější heuristika je kolik jakých figurek má jaká strana.
+Na tuto heuristiku potřebujeme figurkám přidělit vhodnou hodnotu podle toho jak jsou cenné.
+Poté jenom sečteme celkovou hodnotu bílých a černých figurek, odečteme je od sebe a změníme znamení podle toho kdo je na řadě.
+
+Takhle vypadá útržek kódu.
+\begin{minted}[
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    fontsize=\footnotesize,
+    linenos
+]
+{c++}
+int score = 0;
+int side = board.on_turn ? -1 : 1;
+for (int i = 0; i < 5; ++i) {
+    int white = __builtin_popcountll(board.all_bitboards[WHITE][i]);
+    int black = __builtin_popcountll(board.all_bitboards[BLACK][i]);
+    score += (white - black) * opening_piece_values[i] * side;
+}
+\end{minted}
+
+Dále je dobré nějak ohodnotit kde jsou figurky postavené.
+Napříkla jestli je kůň aktivní ve středu, nebo jestli je v podstatě k ničemu v rohu.
+Proto si vytvořím pole 64 čísel pro každý typ figurky.
+Pole bude obsahovat hodnoty, které budou určovat hodnotu dané figurky na daném místě.
+Pro koňe vybadá toto pole takto. Viz obr.\ref{fig:heatmap}
+Poté takto ohodnotím kvalitu postavení všech figurek a přičtu to k finálnímu skóre pozice.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{images/heatmap}
+    \caption{Heatmapa hodnot pro koňe, vytvořená pomocí knihovny matplotlib v pythonu.}
+    \label{fig:heatmap}
+\end{figure}
+
+Pro účely mého jednoduchého šachového bohatě stačí tyto dvě heuristiky, ale používá se jich mnohem více.
+Například celková struktura pěšáků, či síla kombinace dvou střelců.
+Evaluační funkce taky může brát ohled na to v jaké fázi hry se hra nachází.
 
 
 \section{Transpoziční tabulka}\label{sec:trans_tabulka}
@@ -573,23 +635,93 @@ Přibližné prvních 5 bude velmi rychlých, protože jsou zahrány z databáze
 Poté je na to engine sám a musí používat vyhledávací funkci.
 Je důležité aby GUI beželo v jiném vlákně než vyhledávací funkce, protože jinak by GUI přestalo reagovat.
 Mám jednu atomic\footnote{atomic proměnná v c++ znamená, že k ní nemůžou dvě vlákna přistoupit zároveň} proměnnou, která rozhoduje v jaké fázi je program, tedy jestli je na řadě bot, či hráč.
+Pro ilustraci přikládám screenshot GUI. Viz obr.\ref{fig:gui}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.35]{images/gui}
+    \caption{Mnou vytvořený design GUI}
+    \label{fig:gui}
+\end{figure}
+Je z něj teda patrné, že jsem si dělal grafiku sám.
 
 
-\section{Závěr}\label{sec:závěr}
-Cílem mojí maturitní práce bylo vysvětlitp
+\section{Návod na použití}
+Pro zkompilování a použití mého enginu s GUI budete potřebovat počítač s linuxem.
+\begin{itemize}
+    \item Nainstalujte si tyto dependence, které obsahují kompilátor a knihovny potřebné pro GUI
+    \begin{minted}[
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        bac
+    ]
+{bash}
+sudo apt install build-essential libglu1-mesa-dev libpng-dev
+    \end{minted}
+    \item
+    Poté se dostaneme do adresáře src a zkompilujeme projekt.
+    \begin{minted}[
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        bac
+    ]
+{bash}
+make
+    \end{minted}
+
+    \item
+\end{itemize}
+
+
+\chapter{Optimalizování}\label{ch:optimalizování}
+Klíčový pro šachový je rychlost.
+Proto abychom měli šachový engine co nejrychlejší musíme ho různými způsoby optimalizovat.
+Například použití rychlejšího algoritmu, efektivnější datové struktury, či prosté odstranění redundantních operacích.
+Je důležité primárně optimalizovat funkce, které jsou nejvíce časově náročné, abychom z našeho úsilí vytěžili co nejvíce.
+Pro to využiju tzv. profiler.
+Jedná se o program, který analyzuje chod programu a umožní mi zjistik kolik jaké funkce zabírají času.
+Já rád používám linuxový program perf\footnote{obsažený v linuxovém kernel} s visualizací v podobě plamenového grafu\cite{flame_graphs}. Viz obr.~\ref{fig:flame_graph}
+Každá funkce je tam v podobně horizontální čáry.
+Čím je čára delší, tím více procent zabírá z celkového běhu programu.
+Pokud je nějaká čára nad jinou čarou, znamená to, že je funkce volána ve funkci pod ní.
+Z grafu~\ref{fig:flame_graph} je vidět, že nejvíc času zabíra funkce Negamax (minimax vyhledávání) a většinu této funkce zabírá zanořená funkce GetLegalMoves ( Vrací možné legální pohyby).
+Takže až budu chtít ještě více optimalizovat, tak to bude generování pohybů.
+Můj šachový engine zvládne pomocí Perft (viz~kapitola~\ref{subsec:debugování}) prohledat 4865609 pozic za přibližně jednu sekundu.
+Pro porovnání, nejlepší volně dostupný šachový engine na světě, Stockfish stejný počet pozic prohledal za 58 milisekund, takže je ještě spousta prostoru kam můžu svůj engine zlepšovat.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{images/perf_graph}
+    \caption{Plamenový graf mého šachového enginu.}
+    \label{fig:flame_graph}
+\end{figure}
+
+
+\chapter{Závěr}\label{sec:závěr}
+Cílem mojí maturitní práce bylo vytvořit šachový engine a popsat během.
+
 
 
 \seznamTabulek
 
 \seznamObrazku
 
-\prilohy{
-    \kapitola{Příloha}
-}
-
-
+\nocite{alpha_beta}
 \bibliographystyle{czechiso}
 \bibliography{zdroje}
 
+
+\prilohy{
+    \kapitola{Přílohy}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.3]{images/graph.resized.jpg}
+        \caption{větvění šachů po třech pohyběch}
+        \label{fig:strom_tahu}
+    \end{figure}
+}
 \konec
 

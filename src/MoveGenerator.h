@@ -10,9 +10,9 @@
 #include <iostream>
 #include <vector>
 
-bitboard shift_left(bitboard num, int shift_size);
+bitboard shift_leftos(bitboard num, int shift_size);
 
-bitboard shift_right(bitboard num, int shift_size);
+bitboard shift_rightos(bitboard num, int shift_size);
 
 int add(int a, int b);
 

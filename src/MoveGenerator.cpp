@@ -56,11 +56,11 @@ void MoveGenerator::getPseudoLegalMoves(std::vector<Move> &moves, Board &board) 
     getKingAttacks(moves, board);
 }
 
-bitboard shift_left(bitboard num, int shift_size) {
+bitboard shift_leftos(bitboard num, int shift_size) {
     return num << shift_size;
 }
 
-bitboard shift_right(bitboard num, int shift_size) {
+bitboard shift_rightos(bitboard num, int shift_size) {
     return num >> shift_size;
 }
 
@@ -75,7 +75,7 @@ inline int sub(int a, int b) {
 void MoveGenerator::getPawnAttacks(vector<Move> &moves, Board &board) {
     // podle toho jestli jsem cerny nebo bily posouvam figurky bud nahoru nebo dolu
     PrecomputedBitboards &precomp = PrecomputedBitboards::getInstance();
-    auto shift = board.on_turn ? &shift_right : &shift_left;
+    auto shift = board.on_turn ? &shift_rightos : &shift_leftos;
     auto plus_minus = board.on_turn ? &add : &sub;
     int maxrow = board.on_turn ? 0 : 7;
 

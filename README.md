@@ -10,7 +10,7 @@
  ┃ ┣ 📜CMakeLists.txt\
  ┃ ┣ 📜main.cpp\
  ┃ ┣ 📜PgnParser.cpp // Parsuje pgn formát a vytváří indexovaný databázi pozic \
- ┃ ┗ 📜PgnParser.h\
+ ┃ ┗ 📜PgnParser.h\ // 
  ┣ 📂tests\
  ┃ ┣ 📜board_test.cpp\
  ┃ ┣ 📜CMakeLists.txt\

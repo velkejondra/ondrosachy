@@ -64,10 +64,10 @@ void Board::MakeMoveFromPGN(string move) {
         if (mov.piece_type != piece) {
             continue;
         }
-        if (row_specified && mov.from % 8 != row_int) {
+        if (row_specified && mov.from / 8 != row_int) {
             continue;
         }
-        if (file_specified && mov.from / 8 != file_int) {
+        if (file_specified && mov.from % 8 != file_int) {
             continue;
         }
         this->MakeMove(mov);
@@ -333,7 +333,7 @@ bitboard Board::GetAllBitboardAttacks(bool color) {
     bitboard attacks = 0ULL;
 
     // pawn attacks
-    auto shift = color ? &shift_right : &shift_left;
+    auto shift = color ? &shift_rightos : &shift_leftos;
     if (color == WHITE) {
         attacks |= shift(all_bitboards[color][PAWN], 7) & ~precomp.col_row_mask[CHESS_FILE::COl_8];
         attacks |= shift(all_bitboards[color][PAWN], 9) & ~precomp.col_row_mask[CHESS_FILE::COl_1];

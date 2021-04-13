@@ -5,6 +5,8 @@
 #ifndef CHESS_ENGINE_CPP_EVAL_H
 #define CHESS_ENGINE_CPP_EVAL_H
 
+//taken from https://www.chessprogramming.org/Simplified_Evaluation_Function
+
 const int opening_piece_values[] = {
         [PAWN] = 100,
         [KNIGHT] = 325,
@@ -14,7 +16,7 @@ const int opening_piece_values[] = {
         [KING] = 0,
 };
 
-const int white_piece_place_table[6][64] = {
+const int black_piece_place_table[6][64] = {
         // pawns
         {
                 0,   0,   0,   0,   0,   0,   0,   0,
@@ -81,7 +83,7 @@ const int white_piece_place_table[6][64] = {
 
 
 };
-const int black_piece_place_table[6][64] = {
+const int white_piece_place_table[6][64] = {
         // pawns
         {
                 0,   0,   0,   0,   0,   0,   0,   0,

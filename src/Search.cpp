@@ -79,8 +79,12 @@ Move Search::IterativeDeepening(int depth, Board &board) {
     Move bestMove{};
     for (int i = 0; i < depth; i++) {
         bestMove = SearchFromRoot(i, board);
-        table.InsertEntry(board.zobrist_hash, TableEntry{i, bestMove});
+        if (table.size() > 1000000) {
+            table.clear();
+        }
+            table.InsertEntry(board.zobrist_hash, TableEntry{i, bestMove});
+        }
 
-    }
+
     return bestMove;
 }
