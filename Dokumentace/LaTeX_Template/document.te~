@@ -5,6 +5,9 @@
 \usepackage{numprint}
 \npthousandsep{\,}
 \usepackage[draft,nosingleletter]{impnattypo}
+\usepackage[bottom]{footmisc}
+
+\usepackage{float}
 
 
 \newenvironment{absolutelynopagebreak}
@@ -18,7 +21,7 @@
 
 \student{Ondřej Polanecký}
 \trida{B4.I}
-\obor{programator}
+\obor{18-20-M/01}
 \bydliste{L. Janáčka 1266}
 \datumNarozeni{3.1.2002}
 \vedouci{Mgr. Milan Průdek}
@@ -30,25 +33,33 @@
 \zacatek
 
 \titulniStrana
+\addtocounter{page}{1}
 
 
 \anotace
-Tato maturitní práce představuje můj šachový engine a vysvětluje některé techniky, které šachoví
+Tato maturitní práce představuje mnou vytvořený šachový engine a vysvětluje některé techniky a algoritmy, které šachoví
 boti využívají.
 Také obsahuje GUI s~návodem na používání, aby si každý mohl snadno vyzkoušet zahrát si proti šachovému botu.
-\newline\textbf{Klíčová slova:} Šachy, Šachový bot
+\newline\textbf{Klíčová slova:} Šachy; Šachový bot; Šachový stroj; Teorie her; Minimax; Bitboard
 \annotation
-This graduation work presents my chess engine and explains some techniques used by chess engines.
-It aslo contains GUI with guide how to use it, so everyone can easily play against my chess bot.
-\newline\textbf{Keywords:} Chess, Chess bot, Chess engine
+This graduation work presents my chess engine and explains some techniques and algorithms used by chess engines.
+It also contains GUI with guide how to use it, so everyone can easily play against my chess bot.
+\newline\textbf{Keywords:} Chess; Chess bot; Chess engine; Game theory; Minimax; Bitboard
+
 \podekovani
+Chtěl bych poděkovat mým kamarádům Tomáši Zemanovi, Milanovi Jiříčkovi, Danielu Maškovi a Richardovi Kropáčkovi za gramatickou korekturu.
 \obsah
 
 
 \chapter{Úvod}
-Tato maturitní práce představuje můj šachový engine a popisuje různé techniky a algoritmy používané v~šachových enginech.
+V~této maturitní práci popíšu, jak byl vytvořen můj šachový engine.
+Budu se snažit popsat různé techniky a alogoritmy, které šachové enginy využívají.
+Celou práci budu psát v~c++, a používat specifické funkce pro kompilátor gcc.
+Většině popsaným algoritmům bude určena časovou složitost.
+Na konec bude vložen návod na zkompilování a používání enginu.
 
-V~této práci nebudu popisovat pravidla šachů, budu počítat s~vaší znalostí pravidel.
+Pro implementaci šachovým pravidel jsem si pro simplicitu vybral verzi šachů bez rošády.
+Nebudu popisovat základní datové struktury a algoritmy, jako je binární vyhledávání nebo hashmapa.
 
 
 \chapter{Popis a struktura šachového enginu}
@@ -57,30 +68,25 @@ V~této práci nebudu popisovat pravidla šachů, budu počítat s~vaší znalos
 \section{Teorie her}
 
 
-Šachy jsou stálé nevyřešená hra tzn. neví se jak vypadá bezchybná hra.
+Šachy jsou stále nevyřešená hra, tzn.\ neví se, jak vypadá bezchybná hra.
 Jsou nevyřešené, protože počet možných pozic je enormní.
 Už jenom po třech pohybech je \numprint{8902} možných variant hry.
-Pro představu jsem vygeneroval graf pomocí programu Graphviz, který ukazuje jak se hra po třech tazích větví.
-Viz obr.~\ref{fig:strom_tahu}
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.3]{images/graph.resized.jpg}
-    \caption{větvění šachů po třech pohyběch}
-    \label{fig:strom_tahu}
-\end{figure}
+Pro představu tady je vygenerovaný graf pomocí programu Graphviz, který ukazuje, jak se hra po třech tazích větví.
+Viz obr.~\ref{fig:strom_tahu}.
+Obrázek v~plné velikosti je přiložen v~repozitáři.
 
-
-Průměrný počet pohybů ve všech situací je přibližně 35,
-průměrná hra má 80 pohybů, takže když chceme dostat hodně nepřesný odhad možných šachovým partií, tak nám stačí tyto dvě hodnoty umocnit
+Průměrný počet pohybů ve všech situacích je přibližně 35.
+Průměrná hra má 80 pohybů, takže když chceme dostat hodně nepřesný odhad možných šachovým partií, tak nám stačí tyto dvě hodnoty umocnit
 $35^{80} $\approx$ 10^{123} $\cite{shannon_number}.
-Z~tohoto enormního čísla vyplývá, že šachy nelze vyřešit hrubou silou a pravděpodobně šachy v~nejbližší době, či dokonce nikdy nevyřešíme.
-Pro zajímavost dáma má přibližně $5*10^{20}$ variací her a byla vyřešena v~roce 2007.\cite{dama} Při perfektním zahrání od obou hráčů skončí hra remízou.\newline
+Z~tohoto enormního čísla vyplývá, že šachy nelze vyřešit hrubou silou a pravděpodobně je v~nejbližší době, či dokonce nikdy nevyřešíme.
+Pro zajímavost dáma má přibližně $5\times 10^{20}$ variací her a byla vyřešena v~roce 2007.\cite{dama} Při perfektním zahrání od obou hráčů, skončí hra remízou.\newline
 Šachy jsou:
 \begin{itemize}
     \item  hra s~úplnými informacemi, tzn.
     oba hráči ví o~všech informacích ve hře (vidí všechny figurky).
-    Na druhou stranu u~her s~neúplnými informacemi (např. poker),
-    všechny informace neznáme a engine by musel počítat s~pravděpodobnostmi pro určité informace a na základě těchto pravděpodobností se rozhodovat.
+    Na druhou stranu u~her s~neúplnými informacemi, např. poker,
+    všechny informace neznáme a engine by musel počítat s~pravděpodobnostmi pro určité informace.
+    Na základě těchto pravděpodobností se následně bude rozhodovat.
     \item hra s~nulovým součtem, tzn. jakoukoliv výhodu hráč získá na úkor protihráče.
 \end{itemize}
 \begin{flushleft}
@@ -93,25 +99,23 @@ Pro zajímavost dáma má přibližně $5*10^{20}$ variací her a byla vyřešen
         \caption{herní strom piškvorek~\cite{game_tree}}
         \label{fig:game_tree}
     \end{figure}
-
 \end{flushleft}
 
 
 \section{Dělení šachových enginů}
-V~dnešní době existují v~podstatě dva druhy šachových botů.
+Zjednodušeně se dají šachové enginy rozdělit do dvou skupin.
 \begin{itemize}
     \item Šachový bot založený na alfa-beta vyhledávání
     \begin{itemize}
         \item Šachový engine prochází rekurzivně herní strom do určité hloubky a na konečných uzlech stromu zhodnotí pozici.
-        \item Hodnocení pozic je děláno funkcí vytvořenou programátorem a nedostatky evaluační funkce jsou dohnány prohledáváním spousty pozic do velké hloubky.
+        \item Hodnocení pozic je děláno funkcí vytvořenou programátorem a nedostatky evaluační funkce jsou doháňeny prohledáváním velkého množství pozic.
         \item Detaily budou v~kapitole~\ref{sec:alpha–beta-pruning}
     \end{itemize}
-    \item Šachový bot založený na neuronových sítí a prohledávání stromu metodou Monte Carlo
+    \item Šachový bot založený na neuronových sítích a prohledávání stromu metodou Monte Carlo
     \begin{itemize}
-        \item Šachový engine prochází rekurzivně herní strom do určité hloubky a na konečných uzlech stromu zhodnotí pozici.
-        \item Hodnocení pozic je děláno neuronovou sítí, která byla natrénována na hraním proti sobě.
+        \item Hodnocení pozic provádí neuronové sítě, které byly natrénovány hraním proti sobě.
         \item Na vyhledávání se používá \href{https://en.wikipedia.org/wiki/Monte_Carlo_tree_search}{Monte-Carlo tree search}.
-        Oproti Alfa-Beta vyhledávání prohledává podstatně méně pozic, ale prohledává pouze pozice s~velkou šancí na úspěšnost.
+        Oproti Alfa-Beta vyhledávání prohledává podstatně méně pozic, ale prohledává pouze pozice s~velkou šancí na úspěch.
     \end{itemize}
 \end{itemize}
 
@@ -125,28 +129,51 @@ Můj šachový engine bude založen na alfa-beta vyhledávání, takže budu pop
     \begin{itemize}
         \item Třída má na starosti generování legálních pohybů v~dané situaci
         \item Většina šachových enginů nejdřív vygeneruje všechny pseudo-legální pohyby\footnote{Pohyby, které odpovídají tomu, jak se mají figurky hýbat, ale je u~nich možnost, že by dostali svého krále do šachu.},
-        otestuje pohyby a vyřadí u~kterých je vlastní král v~šachu.
+        otestuje pohyby a vyřadí ty, u~kterých je vlastní král v~šachu.
     \end{itemize}
     \item Třída na reprezentaci stavu hry
     \begin{itemize}
-        \item Udržuje informace o~pozicích, právech figurek a případně s~nimi hýbe
-        \item na udržování pozic se většinou použivají bitboardy\footnote{Bitboard nebo bitmapa je 64 bitové číslo kde v~jeho binární podobně každá jednička znamená zabranou pozici na šachovém poli.}.
+        \item Udržuje informace o~pozicích, právech figurek a případně s~nimi hýbe.
+        \item Na udržování pozic se většinou použivají bitboardy\footnote{Bitboard nebo bitmapa je 64 bitové číslo, kde v~jeho binární podobě každá jednička znamená zabranou pozici na šachovém poli.}.
         Detaily o~bitboardech v~kapitole~\ref{sec:bitboard_kapitola}
     \end{itemize}
     \item Transpoziční tabulka
     \begin{itemize}
-        \item Hašovací tabulka která obsahuje hashe pozic a nejlepší pohyb pro určitou pozici.
+        \item Hašovací tabulka, která obsahuje hashe pozic a nejlepší pohyb pro určitou pozici.
         \item Může obsahovat již prohledané pozice nebo pozice získané z~předem vytvořené databáze pohybů.
-        \item Detaily v~kapitole~\ref{trans_tabulka}
+        \item Detaily v~kapitole~\ref{sec:trans_tabulka}
     \end{itemize}
     \item Evaluace pozic
     \begin{itemize}
-        \item Hodnotí pozici podle hodnoty, pozice a struktury figurek.
-        \item Klíčová pro chování šachového enginu.
-        \item Na základě ní se rozhoduje v~prohledávání pozic.
+        \item Hodnotí pozici podle hodnoty, umístění a struktury figurek.
+        \item Je klíčová pro chování šachového enginu, protože na základě ní se rozhoduje v~prohledávání pozic.
+        \item Detaily v~kapitole~\ref{sec:evaluace}
     \end{itemize}
-    \item Prohledávací
+    \item Třída na prohledávání pohybů
+    \begin{itemize}
+        \item Prohledává strom hry a vrací nejlepší nalezený pohyb.
+        \item Používá různé techniky, jak prohledávát co nejnadějnější větve a odřezává větve, u~kterých není šance na úspěch.
+        \item Detaily v~kapitole~\ref{sec:alpha–beta-pruning}
+    \end{itemize}
 \end{itemize}
+
+
+\section{Historie Šachových enginů}
+První plně funkční šachové enginy se začaly objevovat v~60.\ letech minulého století.
+Algoritmy pro šachové enginy existovali už dříve, ale jejich použití bylo bržděno tehdejším hardwarem.
+Už v~50.\ letech minulého století se znaly všechny algoritmy, aby mohl být stvořen použitelný šachový engine.
+Sílá šachových enginů poté prudce rostla. Zaprvé kvůli Mooreově zákonu\footnote{Vypozorovaný zákon, že každé dva roky se zdvojnásobí hustota tranzistorů v~integrovaném obvodu.} a zadruhé díky zlepšování šachových algoritmů.
+V~obr.~\ref{fig:evolution_graph} vidíme vývoj Elo\footnote{Statistické ohodnocení výkonnosti hráče} hodnocení šachových enginů.
+Mezi největší inovace za poslední léta patří vydání AlphaZero, které vneslo do dnešních šachových enginů neuronové sítě.
+Už i tradiční šachový engine, jako je Stockfish, začal používat na hodnocení pozic neuronové sítě a při vydání této změny získal více než 80 Elo bodů.\cite{stockfish_nnue}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.35]{images/engine_evolution}
+    \caption{Vývoj Ela šachových enginů\cite{evolution_graph}}
+    \label{fig:evolution_graph}
+\end{figure}
 
 
 \chapter{Implementace}\label{ch:implementace}
@@ -158,24 +185,24 @@ Můj šachový engine bude založen na alfa-beta vyhledávání, takže budu pop
 Bitboard je 64 bitové číslo.
 Každá pozice bitu koresponduje s~pozicí na herní ploše.
 Pokud je pozice na herní ploše zabrána, tak je korespondující bit v~bitboardu nastaven na 1.
-Aby se dali rozlišit jednotlivé figurky, je třeba udržovat v~paměti bitboard pro každý druh a barvu figurek.
-Viz. ilustrační obrázek \ref{fig:bitboard}
-Důvod proč se využívají bitboardy je kvůli rychlosti generování pohybů.
-Například u~generování pohybů pro koně jsme schopni si pro každou pozici předpočítat možné pohyby koně.
-Také můžeme na bitboardy používat logické operace, takže můžeme například všechny pěšáky posunout o~8 bitů doprava (pohyb nahoru) v~jednom clock cyclu.
-V~c++ jsem použil datovou strukturu unsigned long long.
+Aby bylo možné rozlišit jednotlivé figurky, je třeba udržovat v~paměti bitboard pro každý druh a barvu figurek.
+Viz ilustrační obrázek~\ref{fig:bitboard}
+Důvod, proč se využívají bitboardy, je kvůli rychlosti generování pohybů.
+Například u~generování pohybů pro koně jsme schopni si pro každou pozici předpočítat možné pohyby.
+Na bitboardy také lze používat logické operace, takže můžeme například všechny pěšáky posunout o~8 bitů doprava (pohyb nahoru) v~jednom clock cyclu.
+V~c++ byla na reprezentaci bitboardu použita datová struktura unsigned long long.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includegraphics[scale=0.7]{images/bitboard}
+    \includegraphics[scale=0.65]{images/bitboard}
     \caption{Reprezentace herní plochy pomocí bitboardů\cite{bitboards_wiki}}
     \label{fig:bitboard}
 \end{figure}
 
 \newpage
 
-V~kódu udržuji bitboardy ve třídě Board.
-Navíc k~tomu mám metody, které určité bitboardy spojí logickou operací OR.
+V~kódu jsou bitboardy udržovány ve třídě Board.
+V~této třídě jsou kromě bitboardů také metody, které určité bitboardy spojí logickou operací OR.
 Takhle vypadá definice třídy.
 
 \begin{minted}[
@@ -189,6 +216,8 @@ Takhle vypadá definice třídy.
 typedef unsigned long long bitboard;
 class Board {
     public:
+    //vsechny bitboardy
+    //6 pro kazdou figurky a 2 pro kazdou barvu
     bitboard all_bitboards[2][6]{};
 
     // spojene pozice
@@ -196,7 +225,7 @@ class Board {
     // vraci bitboard figurek urcite barvy
     bitboard PiecesOfColor(bool color);
 
-    // vraci bitboard vsech figurek
+    // vraci bitboard vsech Nigurek
     bitboard AllPieces();
 }
 \end{minted}
@@ -204,18 +233,18 @@ class Board {
 
 \section{Generování pohybů}\label{sec:generování-pohybů}
 Generování pohybů při používání bitboardů se dělá specifickým způsobem.
-Pro figurky, které se hýbou nezávisle na tom kde jsou postaveny ostatní figurky, je to lehké.
-Pouze pro všech 64 pozic kde se může figurka nacházet si předpočítáme možné pozice kam může jít.
-Všechny tyto pozice uložíme do pole a jako index použijeme pozici bitu.
-Když potom narazíme na figurku na určitém poli, stačí vzít předpočítaný bitboard.
-Generování potom probíhá postupným procházení předpočítaného bitboardu.
-Aby bylo procházení bitboardu co nejrychlejší používám funkci \_\_builtin\_ffsll().
+Pro figurky, které se hýbou nezávisle na tom, kde jsou postaveny ostatní figurky, je to lehké.
+Pouze pro všech 64 pozic, kde se může figurka nacházet, si předpočítáme možné pozice, kam může jít.
+Všechny tyto pozice uložíme do pole a jako index použijeme pozici bitu, kde se figurky nachází.
+Když potom narazíme na figurku, které chceme vypočítat možné pohyby, stačí vzít předpočítaný bitboard.
+Generování potom probíhá postupným procházením bitů předpočítaného bitboardu.
+Aby bylo procházení bitboardu, co nejrychlejší je použita funkce \_\_builtin\_ffsll().
 Tato funkce je závislá na kompilátoru (GCC) a snaží se použít přímo assembly instrukci, pokud je dostupná.
-Funkce vrátí velmi rychle index nejméně významného bitu, který je jedna.
-Tím dostanu index pozice kam může figurka jít.
-Prohledaný bit poté nastavím na nulu abych přístě dostal další jedničku.
+Funkce vrátí velmi rychle index nejméně významného bitu, kterým je jednička.
+Tím dostaneme index pozice, kam může figurka jít.
+Prohledaný bit poté nastavíme na nulu, abych přístě dostal další jedničku.
 
-Na ukázku přikládám úryvek kódu pro generování pohybů koňem.
+Na ukázku je přiložen úryvek kódu pro generování pohybů koňem.
 
 \begin{minted}[
     frame=lines,
@@ -231,10 +260,12 @@ Na ukázku přikládám úryvek kódu pro generování pohybů koňem.
     int from;
     int to;
     while (my_knights) {
+        // smycka bude prochazet bitboard my_knights, dokud bitboard nebude prazndy
+
         // nacteni pozice dalsiho kone
         from = __builtin_ffsll(my_knights);
         from--;
-        // smazani nacteneho kone
+        // smazani nacteneho kone z~promenne my_knights
         my_knights ^= 1ULL << (from);
         // utoky ze soucasneho kone
         bitboard attacks = precomp.precomputed_knights[from];
@@ -258,44 +289,37 @@ Na ukázku přikládám úryvek kódu pro generování pohybů koňem.
         }
 \end{minted}
 
-
-Vetší problém je si předpočítat pohyby pro figurky u~kterých záleží na jakých pozicích jsou ostatní figurky (věž, střelec, dáma).
-Je snadné
+Vetší problém je si předpočítat pohyby pro figurky, u~kterých záleží na jakých pozicích jsou ostatní figurky (věž, střelec, dáma).
 Když si vezmeme třeba tento příklad.\ref{fig:precomputed_rook1}
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.4]{images/precomputed_rook1}
     \caption{Možnosti pohybu věže}
     \label{fig:precomputed_rook1}
 \end{figure}
 
-Vidíme, že nás tedy zajímá jaké figurky blokují pohyb věže.
-Můžeme si teda spočítat všechny možnosti kde můžou být.
-Zajímají nás jenom figurky, které jsou na
-V~tomto konkrétním případě je to 14 pozic kde můžou být figurky umístěny.
-To je $2^{14}=16384$ pozic jak můžou být figurky uspořádány.
-Dokonce to číslo můžeme ještě zmenšit, protože na úplně krajních pozicích nezáleží.
+Vidíme, že nás tedy zajímá, jaké figurky blokují pohyb věže.
+Můžeme si předpočítat všechny možnosti, kde můžou být.
+Zajímají nás pouze figurky nacházející se na místech, kam se útočící figurka může hýbat.
+V~tomto konkrétním případě je to 14 pozic, kde můžou být figurky umístěny.
+To je $2^{14}=16384$ pozic, jak můžou být figurky uspořádány.
+Toto číslo můžeme ještě zmenšit, protože na úplně krajních pozicích nezáleží.
 Krajní pozice totiž nic neblokují.
-Takže v~tomto případě to je $2^{10} = \numprint{1024}$ pozic.
-Což v~dnešní době není problém v~paměti udržet.
-Teď ale musíme vyřešit jak budeme pozice v~poli indexovat.
+Takže v~tomto případě to je $2^{10} = \numprint{1024}$ pozic, což v~dnešní době není problém udržet v~paměti.
+Teď ale musíme vyřešit, jak budeme pozice v~poli indexovat.
 Jedna možnost je použít hashmapu a jako index použít bitboard blokujících figurek.
 Je tu ale rychlejší a paměťově méně náročnější možnost.
-Jsou to tzv.
-magické bitboardy.
+Jsou to tzv.\ magické bitboardy.
 Jde o~to, že v~celém bitboardu nás zajímají pouze určité bity.
-A~my je můžeme rychlou metodou vyjmout z~bitboardu a indexovat pouze podle těchto určitých pozic.
-Dělá se to tak, že se určitým číslem (magickým) vynásobí bitboard a to číslo je tak šikovné, že nám posune chtěné pozice na prvnich x bitů.
+Lze je touto rychlou metodou vyjmout z~bitboardu a indexovat pouze podle těchto určitých pozic.
+Funguje to tak, že se určitým číslem (magickým) vynásobí bitboard a to číslo je tak šikovné, že nám posune chtěné pozice na prvnich x bitů.
 V~minulém případě by to posunulo těch 10 bitů na začátek čísla.
 Pak jenom ořízneme zbytek bitboardu a indexujeme podle těchto 10 bitů.
-Tyto čísla se získávají náhodným zkoušením a hledá se takové aby to namapovalo námi chtěné bity na co nejméně bitů.
-V~ideálním případě na tolik bitů kolik bitů máme.
-Já jsem si svoje čísla sám nepočítal.
-Pouze jsem vzal čísla, které už někdo spočítal\cite{rustad-elliott}
+Tyto čísla se získávají náhodným zkoušením a hledá se takové, aby to namapovalo námi chtěné bity na co nejméně bitů.
+V~ideálním případě na tolik bitů, kolik bitů máme.
+Použitá čísla nejsou má, ale jsou použita čísla, která již někdo spočítal.\cite{rustad-elliott}
 
-Ukážu na příkladu jak by se vytvořil index pro tuto situaci.
-
-
+V~tomto příkladu je ukázáno, jak by se vytvořil index pro tuto situaci.
 \begin{minted}[
     frame=lines,
     framesep=2mm,
@@ -340,19 +364,19 @@ Jenom z~něho musíme dostat co je to za index.
 
 Vynásobením magickým číslem dostaneme index.
 Zeleně zabarvená část vypočítaného čísla je index.
-Teď už jenom stačí bitovým posunem dostat jenom posledních 10 bitů čísla a máme index.
+Teď už jenom stačí bitovým posunem dostat posledních 10 bitů čísla a máme index.
 
 \subsection{Debugování}\label{subsec:debugování}
-Problém s~debugováním generátoru pohybů je ohromné množství možných pozicí, takže je velmi obtížné hledat všechny chyby v~generátoru pouhým náhodným hraním.
+Problémem u~debugováním generátoru pohybů, je ohromné množství možných pozicí, takže je velmi obtížné hledat všechny chyby v~generátoru pouhým náhodným hraním.
 Proto byl vymyšlen perft (PERFormance Test)\cite{perft}.
 Perft projíždí všechny možné pozice do určité hloubky a konečné uzly stromu sečte.
-Potom výsledek porovnám se známými správnými výsledky.
+Potom výsledek porovná se známými správnými výsledky.
 \newline
-Výsledek spočítáme klasickým DFS (Depht First Search).
-Budeme rekurzivně volat naší funkci na všechny pohyby a až dorazíme do hloubky jedna tak vrátímě počet všech pozic.
+Výsledek spočítáme pomocí klasického DFS (Depht First Search).
+Budeme rekurzivně volat naší funkci na všechny možné pohyby, a až dorazíme do hloubky jedna, tak vrátíme počet všech pozic.
 Ty se potom v~každé větvi sečtou.
 Nakonec dostaneme všechny konečné pozice.
-Tady je kód moji perft funkce.
+Tady je kód perft funkce.
 \begin{minted}[
     frame=lines,
     framesep=2mm,
@@ -367,22 +391,27 @@ unsigned long long perft(int depth, Board &board) {
         return 1;
     }
     if (depth == 1) {
+        // vrati pocet legalnich pohybu na konci vetve
         return gen.getLegalMoves(board).size();
     }
     unsigned long long nodes = 0;
+
     for (auto move : gen.getLegalMoves(board)) {
         Board next_board = board;
+        // zahraje pohyb dalsiho uzlu
         next_board.MakeMove(move);
+
+        // pricte pocet konecnych uzlu teto vetve
         nodes += perft(depth - 1, next_board);
     }
-
     return nodes;
 };
 \end{minted}
 
-Tuto funkci potom využiji na ověření správnosti generátoru takto.
-Správné hodnoty konečných pozic jsem sebral z~internetu.\cite{perft_results}
-Poté jsem jenom pomocí c++ knihovny Catch2 porovnal hodnoty.
+
+Správné hodnoty konečných pozic jsou použity z~internetu.\cite{perft_results}
+Poté jsou pomocí c++ knihovny Catch2 porovnány s~vypočítanými hodnotami.
+Perft funkci potom využijeme na ověření správnosti generátoru takto.
 \begin{minted}[
     frame=lines,
     framesep=2mm,
@@ -401,105 +430,152 @@ Poté jsem jenom pomocí c++ knihovny Catch2 porovnal hodnoty.
 
 
 \section{Prohledávání pozic}\label{sec:alpha–beta-pruning}
-Alfa beta prunning je metoda na zvolení nejlepšího pohybu ve stromu pohybů a odřezávání nepotřebných větví .
-Je to vylepšení algoritmu minimax.
 
 \subsection{Minimax}
 Minimax algoritmus rekurzivně projde herní strom do nějaké hloubky a na posledním uzlu vrátí evaluaci pozice.
-Při vracení rekurze vždycky porovnám všechny potomky pozice a vyberu tu nejvýhodnější pro hráče právě na tahu.
+Při vracení rekurze porovnám všechny potomky pozice a vyberu tu nejvýhodnější pro hráče, který je právě na tahu.
 
 Takhle vypadá vygenerovaný minimax strom, který ještě nemá ohodnoceny poslední uzly.~\ref{fig:minimax_tree}
-
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.22]{images/minimax_tree}
     \caption{Minimax strom. Barva uzlu určuje hráče na tahu v~dané pozici}
     \label{fig:minimax_tree}
 \end{figure}
 
-Následně evaluační funkcí ohodnotím poslední uzly.\ref{fig:minimax_tree_last}
-\begin{figure}
+Následně evaluační funkcí ohodnotí poslední uzly.\ref{fig:minimax_tree_last}
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.22]{images/minimax_tree_last}
     \caption{Minimax strom. Poslední pozice ohodnocené. }
     \label{fig:minimax_tree_last}
 \end{figure}
-
+\newpage
 Teď půjdeme zespodu nahoru.
 Uzel porovná hodnoty všech potomků a nastaví svojí hodnotu na tu nejvýhodnější pro hráče na tahu.
 Podle toho poté vybereme nejlepší pohyb.\ref{fig:minimax_tree_full}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.22]{images/minimax_tree_last}
     \caption{Minimax strom. Všechny pozice ohodnocené }
     \label{fig:minimax_tree_full}
 \end{figure}
+Časová složitost toho algoritmu je
+\[O(b^d)\]
+kde $b$ je průměrný počet možných tahů a $d$ je hloubka stromu.
 
 \subsection{Alpha-Beta pruning}\label{subsec:alha-beta-pruning}
 Alpha-Beta pruning je vylepšení na algoritmu minimax.
-Jde o~to, že není třeba vyhodnocovat všechny konečné uzly, protože při postupném vyhodnocování stromu zjistíme, že do některých větví se nikdy nemůžeme dostat za perfektního hraní nepřítele. Viz obr.\ref{fig:alpha_beta_full}
+Jde o~to, že není třeba vyhodnocovat všechny konečné uzly, protože při postupném vyhodnocování stromu zjistíme, že do některých větví se nikdy nemůžeme dostat za perfektního hraní nepřítele.
+Viz obr.\ref{fig:alpha_beta_full}
 Abychom odřízli co nejvíce takovýchto větví, je klíčové pořadí pohybů.
-Proto existují jsou různé techniky jak seřadit pohyby, aby nejvíce nadějné pohyby byli prozkoumány jako první.
-Například pohyb z~transpoziční tabulky, sebrání nejcennější figurky nejméně cennou figurky a spoustu další heuristik pro dobré seřazení pohybů.\cite{move_ordering}
+Proto existují různé techniky pro seřazení pohybů, aby nejvíce nadějné pohyby byly prozkoumány jako první.
+Například pohyb z~transpoziční tabulky, sebrání nejcennější figurky nejméně cennou figurkou a spoustu další heuristik pro dobré seřazení pohybů.\cite{move_ordering}
 
 
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.25]{images/alpha_beta_full.png}
-    \caption{Ohodnocený strom pomocí alfa-beta pruningu. Prázdné uzly byli ořezány, jelikož je nebylo třeba prohledávat}
+    \caption{Ohodnocený strom pomocí alfa-beta pruningu. Prázdné uzly byly ořezány, jelikož je nebylo třeba prohledávat}
     \label{fig:alpha_beta_full}
 \end{figure}
 
 
+\section{Evaluace}\label{sec:evaluace}
+Dobrá evaluační funkce je klíčová pro šachový engine, protože na základě ní rozhoduje, jaké pozice jsou dobré.
+Evaluační funkce se může skládat z~mnoha heuristik.
+Nejzákladnější heuristika je, kolik jakých figurek má jaká strana.
+Na tuto heuristiku potřebujeme figurkám přidělit vhodnou hodnotu podle toho, jak jsou cenné.
+Poté jenom sečteme celkovou hodnotu~bílých a černých figurek, odečteme je od sebe a změníme znamení podle toho, kdo je na řadě.
+
+Takhle vypadá útržek kódu.
+\begin{minted}[
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    fontsize=\footnotesize,
+    linenos
+]
+{c++}
+int score = 0;
+int side = board.on_turn ? -1 : 1;
+for (int i = 0; i < 5; ++i) {
+    int white = __builtin_popcountll(board.all_bitboards[WHITE][i]);
+    int black = __builtin_popcountll(board.all_bitboards[BLACK][i]);
+    score += (white - black) * opening_piece_values[i] * side;
+}
+\end{minted}
+
+Dále je dobré nějak ohodnotit, kde jsou figurky postavené.
+Například jestli je kůň aktivní ve středu, nebo jestli je v~podstatě k~ničemu v~rohu.
+Proto si vytvoříme pole 64 čísel pro každý typ figurky.
+Pole bude obsahovat čísla, která budou určovat hodnotu dané figurky na daném místě.
+Pro koňe vybadá toto pole takto.
+Viz obr.\ref{fig:heatmap}.
+Poté ohodnotím kvalitu postavení všech figurek a přičtu to k~finálnímu skóre pozice.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{images/heatmap}
+    \caption{Heatmapa hodnot pozic pro koňe, vytvořená pomocí knihovny matplotlib v~pythonu.}
+    \label{fig:heatmap}
+\end{figure}
+
+Pro účely jednoduchého šachového bota bohatě stačí tyto dvě heuristiky, ale používá se jich mnohem více.
+Například celková struktura pěšáků či mobilita figurek.
+Evaluační funkce taky může brát ohled na to, v~jaké fázi se hra nachází.
+
+
 \section{Transpoziční tabulka}\label{sec:trans_tabulka}
-Jelikož se často stává při prohledávání pozic, že narazíme na pozici, kterou už jsme někdy prohledávali, je výhodné si prohledané pozice ukládat.
-V~c++ na to používám datovou strukturu unordered\_map, což je v~podstatě hashmapa, která má časovou složitost vkládání i čtení $O(1)$, díky čemuž je ideální na ukládání pozic.
+Při prohledávání pozic se často stává, že narazíme na pozici, kterou už jsme někdy prohledávali, proto je výhodné si prohledané pozice ukládat.
+V~c++ na to použijeme datovou strukturu unordered\_map, což je v~podstatě hashmapa, která má časovou složitost vkládání i čtení $O(1)$, díky čemuž je ideální na ukládání pozic.
 
 \subsubsection{Zobrist hašování}
-Jako klíč potřebuju vytvořit hash pozice, protože kdybychom použili všechny informace, museli bychom jako klíč použít 6 bitboardů plus informace o~en passantu, což je příliš.
-Vzhledem k~tomu, že potřebujeme hash pozice vytvářet velmi často, je třeba aby hashovací funkce byla hodně rychlá.
+Jako klíč potřebujeme vytvořit hash pozice, protože kdybychom použili všechny informace, museli bychom jako klíč použít 6 bitboardů plus informace o~en passantu, což je příliš.
+Vzhledem k~tomu, že potřebujeme hash pozice vytvářet velmi často, je třeba, aby hashovací funkce byla hodně rychlá.
 Proto byla vytvořena metoda zobrist hashing\cite{zobrist1990new}.
 Metoda se skládá ze dvou částí.
 
 \begin{enumerate}
-    \item Předpočítání náhodných čísel a zpočítání prvního hashe.
+    \item Předpočítání náhodných čísel a spočítání prvního hashe.
 
-    Pro každý bit na každém bitboardu vytvořím náhodné 64-bitové číslo.
-    Poté se vytvořím 64-bitové číslo kde budu udržovat hash pozice.
+    Pro každý bit na všech bitboardech vytvoříme náhodné 64-bitové číslo.
+    Poté vytvoříme 64-bitové číslo, kde budeme udržovat hash současné pozice.
     Následně projdu všechny bitboardy a pro každý obsazený bit vyXORuju příslušné náhodné číslo na mojí hash pozici.
     Tím dostanu hash počáteční pozice.
 
     \item Aktualizování hash čísla podle zahraného pohybu.
 
-    Krása zobrist hashování je, že když zpočítáme počáteční hash, můžeme poté hash pouze aktualizovat cca dvěma XOR operacemi.
-    Když provedeme nějaký pohyb, potřebujeme z~hashe odstranit figurku která se pohla a přidat figurku tam kam se pohla.
+    Krása zobrist hashování je, že když spočítáme počáteční hash, můžeme poté hash pouze aktualizovat cca dvěma XOR operacemi.
+    Když provedeme nějaký pohyb, potřebujeme z~hashe odstranit figurku, která se pohla, a přidat figurku tam, kam se pohla.
     To uděláme tak, že použijeme náhodné hodnoty z~minulého kroku.
-    Abychom figurku odstranili z~hashe, stačí nám na náš hash znovu vyXORovat náhodné číslo, které koresponduje s~touto figurkou na této pozici.
-    Potom do hashe přidáme náhodné číslo, které koresponduje s~pozicí kam jsme figurku přesunuli.
+    Abychom figurku odstranili z~hashe, stačí nám na náš hash znovu vyXORovat náhodné číslo, které koresponduje s~figurkou na této pozici.
+    Potom do hashe přidáme náhodné číslo, které koresponduje s~pozicí, na kterou jsme jsme figurku přesunuli.
 \end{enumerate}
 
 \subsubsection{Proč to funguje?}
 Tato metoda funguje díky dvoum atributům XOR operace.
-Zaprvé nám pomáhá asociativita XOR operace, tzn.\ že nezáleží na pořadí operací, což je přesně to co potřebujeme aby pozice měla stejný hash pokud se tam dostaneme různou variací pohybů.
-Zadruhé nám pomáhá to, že XOR dvou stejným čísel je nula.
+Zaprvé nám pomáhá asociativita XOR operace, tzn.\ že nezáleží na pořadí operací, což je přesně to co potřebujeme, aby pozice měla stejný hash, pokud se tam dostaneme různou variací pohybů.
+Zadruhé nám pomáhá to, že XOR dvou stejných čísel je nula.
 Takže když chceme z~hash čísla odstranit nějakou figurku, tak pouze na náš hash vyXORujeme náhodné číslo korespondující s~pozicí figurky.
 
 
 \section{Databáze otevíracích pohybů}\label{sec:databáze-pohybů}
-Počáteční fáze šachů je v~dnešní době prozkoumána do velké hloubky, takže naše znalosti mnohem převyšují schopnosti šachového najít nejlepší pohyby.
+Počáteční fáze šachů je v~dnešní době prozkoumána do velké hloubky, takže naše znalosti mnohem převyšují schopnosti šachového enginu najít nejlepší pohyby.
 Proto je vhodné mít nějakou databázi pohybů, kterou použijeme na začátku hry.
-Abych si vytvořil svojí databázi musím stáhnout nějakou sadu her.
-Vybral jsem si sadu her MillionBase 2.5\cite{chess_database}, což je databáze 2.5 milionu kvalitních šachových partií ve formátu PGN\cite{pgn_format}.
+Abychom si vytvořili svojí databázi, musíme stáhnout nějakou sadu her.
+Zvolíme například sadu her MillionBase 2.5\cite{chess_database}, což je databáze 2.5 milionu kvalitních šachových partií ve formátu PGN\cite{pgn_format}.
 
 \subsection{PGN formát}
 PGN je standardní formát na zaznamenání her v~šachách.
 Je relativně snadno čitelný pro lidi, ale není tak snadné ho počítačově zparsovat, protože není možné vytvořit pohyb bez znalosti stavu hry.
-Jde o~to, že v~pgn formátu se používá co nejméně informací na identifikaci figurky kterou chceme hýbat.
-Takže například pokud chceme v~PGN formátu zapsat, že chceme pohnout koněm na určité místo, a máme koně pouze jednoto, tak zapíšeme jenom že hýbáme koněm a kam s~ním hýbáme.
+Jde o~to, že v~pgn formátu se používá co nejméně informací na identifikaci figurky, kterou chceme hýbat.
+Takže například pokud chceme v~PGN formátu zapsat pohyb koněm na určité místo, a máme koně pouze jednoho, tak zapíšeme jenom že hýbáme koněm a kam s~ním hýbáme.
 To, kterým koňem a odkud hýbáme vyplívá z~toho, že máme koňe pouze jednoho.
-Pokud máme dva koňě, tak bychom k~tomu museli ještě připsat v~jakém sloupci, či řádku se nachází.
+Pokud máme koně dva, tak bychom k~tomu museli ještě připsat v~jakém sloupci či řádku se nachází.
 Takhle vypadá ukázková hra v~PGN formátu.
 
 
@@ -526,16 +602,16 @@ Takhle vypadá ukázková hra v~PGN formátu.
 20. O-O Qxc3 21. Qe2 Qxa3 22. Rc2 Rxc2 23. Qxc2 Qc3 24. Qe4 Rc8 25. g3 Qc2
 26. Qb7 Qc6 0-1
 \end{minted}
-Svůj PGN parser\footnote{Parser je program na překlad určitého vstupu do žádaného výstupu. V~mém případě chci přetvořit PGN formát do struktury kterou používám na ukládání pohybů} chci mít co nejjednodušší, takže budu ignorovat informační tagy\footnote{Nad každou hrou. Obsahují metadata o~hře. Například ELO hráčů, či místo konáni hry.} a budu prohledávat maximálně do hloubky 14 pohybů.
-Abych nemusel pokaždé před začátkem programu parsovat 2.5 miliónu her, napsal jsem si svojí takovou databázi a budu tedy vysledky ukladat do souborů.
-Nejdříve si načtu všechny pohybu do datové struktury map<bitboard, unordered\_map<string, int>{}> , což je seřazená hash mapa podle klíče, která obsahuje neseřazenou hashmapu pohybů s~jejich četnostmi.
-Abych efektivně tuto datovou strukturu využil i ze souboru, vytvořil jsem si datový a indexový soubor.
+PGN parser\footnote{Parser je program na překlad určitého vstupu do žádaného výstupu. V~našem případě chceme přetvořit PGN formát do struktury, kterou používáme na ukládání pohybů.} vytvoříme co nejjednodušší, takže budeme ignorovat informační tagy\footnote{Jsou nad každou hrou. Obsahují metadata o~hře. Například ELO hráčů či místo konáni hry.} a budeme prohledávat maximálně do hloubky 14 pohybů.
+Abychom nemuseli pokaždé před začátkem programu parsovat 2.5 miliónu her.
+Napíšeme si vlastní key-value databázi\footnote{Je to v~podstatě hashmapa, akortá je uložená na disku. Pomocí klíče (hashe) můžeme dostat hodnotu (optimální tahy)}, která bude fungovat ze souboru na disku.
+Nejdříve si načteme všechny pohyby do datové struktury map<bitboard, unordered\_map<string, int>{}>, což je seřazená hash mapa podle klíče, která obsahuje neseřazenou hashmapu pohybů s~jejich četnostmi.
+Abychom tuto datovou strukturu využili efektivně i ze souboru, vytvořil jsem si datový a indexový soubor.
 Indexový soubor obsahuje seřazené hash pozice a index pohybů pro určitý hash v~datovém souboru.
-Datový soubor obsahuje na každém řadku všechny pohybý které byli v~dané pozic zahrány a jejich četnost.
+Datový soubor obsahuje na každém řádku všechny pohyby, které byly v~dané pozici zahrány a jejich četnosti.
 
-Když budu chtít vyhledat zahrané tahy pro určitou pozici.
-Vyhledám pomocí binárního vyhledávání hash v~indexovém souboru.
-Tím dostanu pozici pohybů v~datovém souboru a podle této pozice tyto pohyby načtu.
+Když budu chtít vyhledat zahrané tahy pro určitou pozici, vyhledám pomocí binárního vyhledávání hash v~indexovém souboru.
+Tím dostanu pozici pohybů v~datovém souboru, podle které tyto pohyby načtu.
 Časová složitost vyhledávání bude
 
 \[
@@ -544,7 +620,7 @@ Tím dostanu pozici pohybů v~datovém souboru a podle této pozice tyto pohyby 
 kde $n$ je počet hash pozic uložených v~indexovém souboru a $m$ je počet různých zahraných tahů v~určité pozici.
 
 
-Tady je útržek kódu z~mého parseru.
+Tady je útržek kódu z~parseru.
 \begin{minted}[
     frame=lines,
     framesep=2mm,
@@ -557,28 +633,131 @@ depth++
 database[board.zobrist_hash][token]++;
 board.MakeMoveFromPGN(token);
 \end{minted}
-Je to kód ze smyčky která prochází už pohyby pgn formátu, které jsou uložené jako string ve proměnné tok.
-Nejdřív zvětším hloubku prohledávání o~jednu.
-Potom přidám jedničku ke četnosti pohybu, který se chystám zahrát v~dalším příkazu.
-
-\section{GUI}\label{sec:gui}
-Pro vytvoření GUI\footnote{Graphical User Interface} mého programu jsem zvolil OLC::PixelGameEngine\cite{olc_engine}, protože už jsem v~něm pracoval, je minimalistický a rychlý.
+Je to kód ze smyčky, která prochází pohyby pgn formátu, které jsou uložené jako string v~proměnné token.
+Nejdříve zvětšíme hloubku prohledávání o~jedna.
+Potom přidáme jedničku k~četnosti pohybu, který se chystáme zahrát v~dalším příkazu.
 
 
+\chapter{GUI}\label{sec:gui}
+Pro vytvoření GUI\footnote{Graphical User Interface} mého programu byl zvolen OLC::PixelGameEngine\cite{olc_engine}, protože jsem v~něm již pracoval.
+Je minimalistický a rychlý.
+Vzhledem k~tomu, že hlavním cílem této práce není GUI a bylo by časově náročné dělat propracované GUI, tak bylo vytvořeno pouze na hraní za bílého a bez jakéhokoliv menu.
+V~PixelGameEnginu neexistují žádné běžné GUI prvky, pouze můžeme kreslit tvary, obrázky a samotné pixely.
+Pokaždé, když se něco změní na hrací ploše, tak ji vykreslíme celou znova.
+Jediné co děláme je, že při kliku na figurku zvýrazníme všechny možné tahy s~touto figurkou a při kliku na nějaké místo touto figurkou táhnu.
+Když zahraje tah člověk, začne s~počítáním tahu počítač.
+Přibližné prvních 5 bude velmi rychlých, protože jsou zahrány z~databáze tahů.
+Poté je na to engine sám a musí používat vyhledávací funkci.
+Je důležité, aby GUI beželo v~jiném vlákně, než vyhledávací funkce, protože jinak by GUI přestalo reagovat.
+Máme jednu atomic\footnote{atomic proměnná v~c++ znamená, že k~ní nemůžou dvě vlákna přistoupit zároveň} proměnnou, která rozhoduje, v~jaké je program fázi, tedy jestli je na řadě bot či hráč.
+Pro ilustraci je tady přiložený screenshot GUI. Viz obr.\ref{fig:gui}
 
-\kapitola{Závěr}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.2]{images/gui}
+    \caption{Mnou vytvořený design GUI}
+    \label{fig:gui}
+\end{figure}
+Je z~něj patrné, že jsem si dělal grafiku sám.
 
-\seznamTabulek
+\newpage
+\section{Návod na použití}
+Pro zkompilování a použití mého enginu s~GUI budete potřebovat počítač s~linuxem.
+\begin{itemize}
+    \item Nainstalujte si tyto dependence, které obsahují kompilátor a knihovny potřebné pro GUI
+    \begin{minted}[
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        bac
+    ]
+{bash}
+sudo apt install build-essential libglu1-mesa-dev libpng-dev
+    \end{minted}
+    \item
+    Poté se dostanťně do adresáře src a zkompilujte projekt pomocí příkazu make
+    \begin{minted}[
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        bac
+    ]
+{bash}
+cd src
+make
+    \end{minted}
+    \item a nakonec spustíte program
+    \begin{minted}[
+        framesep=2mm,
+        baselinestretch=1.2,
+        fontsize=\footnotesize,
+        bac
+    ]
+{bash}
+./gui_chess
+    \end{minted}
 
-\seznamObrazku
-
-\prilohy{
-    \kapitola{Příloha}
-}
+\end{itemize}
 
 
+\chapter{Optimalizování}\label{ch:optimalizování}
+Klíčový pro šachový engine je rychlost.
+Abychom měli šachový engine co nejrychlejší, musíme ho různými způsoby optimalizovat.
+Například použití rychlejšího algoritmu, efektivnější datové struktury či prosté odstranění redundantních operací.
+Je důležité primárně optimalizovat funkce, které jsou nejvíce časově náročné, abychom z~našeho úsilí vytěžili co nejvíce.
+Proto využijeme tzv. profiler.
+Jedná se o~program, který analyzuje chod programu a umožní mi zjistit, kolik jaké funkce zabírají času.
+Použijeme na to linuxový program perf\footnote{Program na analýzu běhu programu. Obsažený v~linuxovém kernelu.} s~visualizací v~podobě plamenového grafu\cite{flame_graphs}. Viz obr.~\ref{fig:flame_graph}
+Každá funkce je tam v~podobně horizontální čáry.
+Čím je čára delší, tím více procent zabírá z~celkového běhu programu.
+Pokud je nějaká čára nad jinou čarou, znamená to, že je funkce volána ve funkci pod ní.
+Z~grafu~\ref{fig:flame_graph} lze vidět, že nejvíc času zabíra funkce Negamax (minimax vyhledávání) a většinu této funkce zabírá zanořená funkce GetLegalMoves (vrací možné legální pohyby).
+Takže až budu chtít ještě více optimalizovat, tak to bude generování pohybů.
+Šachový engine zvládne pomocí Perft (viz~kapitola~\ref{subsec:debugování}) prohledat 4865609 pozic za přibližně jednu sekundu.
+Pro porovnání, Stockfish, nejlepší volně dostupný šachový engine na světě, prohledal stejný počet pozic za 58 milisekund, takže je ještě spousta prostoru, kam lze tento engine zlepšovat.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{images/perf_graph}
+    \caption{Plamenový graf mého šachového enginu.}
+    \label{fig:flame_graph}
+\end{figure}
+
+
+\chapter{Závěr}\label{sec:závěr}
+Cílem této maturitní práce bylo vytvořit funkční šachový engine, popsat jeho části a celkově uvést do problematiky šachových enginů.
+Jelikož šachový engine, je už trošku větší projekt a v~c++ jsem dělal pouze jeden lehce větší projekt,
+musel jsem poměrně velkou část práce na maturitní práce strávit rešerší a teoretickým návrhem abych nemusel projekt poté přepisovat.
+Hlavním zdrojem vědomostí co se týče šachovým enginů byla stránka www.chessprogramming.org a diplomová práce Some aspects of chess programming\cite{some_aspects_of_chess}.
+S~hernímy boty už jsem měl zkušenost, protože jsem v~druhém ročníku vytvořil bota na piškvorky.
+Mezi největší problémy se kterými jsem se v~této maturitní práci setkal, bylo že jsem dostával segmentation fault pouze ve verzi programu s~optimalizacemi.
+To znamená, že jsem nemohl debugovat c++ instrukce, abych zjistil kde se stala chyba.
+Takže na vyřešení tohoto problému jsem musel analyzovat přímo assembly instrukce.
+Poté mi ještě docela zavařilo, když jsem rozmístil šachové figurky zrcadlově.
+Perft výsledky byli stejné, ale šachový engine potom hrál nesmyslné pohyby z~databáze.
+Oba problémy jsem nakonec zdárně vyřešil.
+Při některých designových rozhodnutí jsem udělal chybu, že jsem upřednostnil simplicity před výkonem a nakonec to mělo větší následky než jsem očekával.
+Tento engine tedy není příliš konkurenceschopný proti ostatním šachovým enginu.
+Nedostatečný výkon enginu doháním poměrně rozsáhlou databází pohybů.
+Zparsoval jsem 1.9 GB šachových her do databáze pohybů o~velikosti cca 21 MB.
+Pro používání enginu jsem vytvořil velmi zjednodušenné GUI, ve kterém jde hrát pouze za bílého a pro hrání znovu musíte GUI restartovat.
+GUI bylo používáno hlavně pro snadnější debugování.
+
+Jako celek tento projekt hodnotím jako úspěch, ale pravděpodobně se k~němu ještě někdy vrátím a většinu přepíšu pro větší výkon.
+
+\nocite{alpha_beta}
 \bibliographystyle{czechiso}
 \bibliography{zdroje}
 
+
+\prilohy{
+    \kapitola{Přílohy}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.3]{images/graph.resized.jpg}
+        \caption{větvění šachů po třech pohyběch}
+        \label{fig:strom_tahu}
+    \end{figure}
+}
 \konec
 

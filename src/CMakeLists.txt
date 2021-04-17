@@ -4,8 +4,10 @@ project(chess_engine_cpp_exe)
 set(CMAKE_CXX_STANDARD 20)
 
 # add_executable(main.cpp Board.h Board.cpp)
-set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall -Og")
-set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall -Og")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-Wall -O3")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-Wall -O3")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(source_files Board.h Board.cpp PgnParser.cpp PgnParser.h PrecomputedBitboards.h PrecomputedBitboards.cpp debug.cpp debug.h eval.h eval.cpp MoveGenerator.cpp MoveGenerator.h TranspositionTable.cpp TranspositionTable.h Search.cpp Search.h)
 
 add_executable(chess_engine_cpp main.cpp ${source_files})

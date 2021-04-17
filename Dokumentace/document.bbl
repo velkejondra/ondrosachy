@@ -67,6 +67,10 @@ Schaeffer, J.; Björnsson, Y.; Kishimoto, A.; aj.: Checkers Is Solved.
 Schroder, E.: Perft results. Dostupné na:
   \url{http://rebel13.nl/download/data.html}, 2021.
 
+\bibitem{some_aspects_of_chess}
+Streczek, M.: \emph{Some aspects of chess programming}. Diplomová práce,
+  Technical University of Łódź, 2004.
+
 \bibitem{stockfish_nnue}
 Yang, D.: Introducing NNUE Evaluation. Dostupné na
   \url{https://stockfishchess.org/blog/2020/introducing-nnue-evaluation/}.
