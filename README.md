@@ -17,7 +17,7 @@ a nakonec spustíte program
 ./gui_chess
 ```
 
-<img src="Dokumentace/images/img.png" width="100" height="100">
+<img src="Dokumentace/images/img.png" width="300" height="300">
 
 ## struktura repozitáře
 📦chess_gitlab\
