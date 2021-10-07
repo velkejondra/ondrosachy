@@ -139,7 +139,6 @@ private:
         PrecomputeAll();
     }
 
-
     // predpočítá všechny potřebné bitmapy na počítání možných pozic
     void PrecomputeAll();
 

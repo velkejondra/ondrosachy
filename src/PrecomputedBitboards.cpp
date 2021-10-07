@@ -2,7 +2,6 @@
 // Created by ondra on 10/27/2020.
 //
 
-#include <climits>
 #include "PrecomputedBitboards.h"
 #include "debug.h"
 
@@ -57,9 +56,6 @@ void PrecomputedBitboards::PrecomputeAll() {
 
 void PrecomputedBitboards::PrecomputeKings() {
     for (int i = 0; i < 64; ++i) {
-        if (i == 7) {
-            bool test = true;
-        }
         this->precomputed_kings[i] ^= (1ULL << i) << 7 & ~this->col_row_mask[CHESS_FILE::COl_8];
         this->precomputed_kings[i] ^= (1ULL << i) << 8;
         this->precomputed_kings[i] ^= (1ULL << i) << 9 & ~this->col_row_mask[CHESS_FILE::COl_1];
@@ -141,12 +137,8 @@ void PrecomputedBitboards::PrecomputeBiships() {
     for (int i = 0; i < 64; ++i) {
         for (int j = 0; j < 1ULL << bishop_index_bits[i]; ++j) {
             bitboard blockers = GetBlockersFromIndex(j, this->bishop_rays[i]);
-            if (blockers == 18014398509481984ULL) {
-                bool test = true;
-            }
             this->precomputed_bishops[i][(bishop_magics[i] * blockers) >> (64 - bishop_index_bits[i])] = ComputeBishop(
                     this->bishop_rays[i], blockers, i);
-            bool test= true;
         }
     }
 

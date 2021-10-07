@@ -46,11 +46,8 @@ public:
     bitboard all_bitboards[2][6]{};
 
     // spojene pozice
-    bitboard PiecesOfColor(bool color);
-
 
     bitboard board_zobrist[2][6][64]{};
-    bitboard castling_zobrist[4]{};
     bitboard side_to_move_zobrist{};
     bitboard en_passant_zobrist[8]{};
 

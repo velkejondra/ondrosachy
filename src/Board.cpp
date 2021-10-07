@@ -235,9 +235,6 @@ void Board::InitZobrist() {
             }
         }
     }
-    for (bitboard &num : castling_zobrist) {
-        num = distrib(gen);
-    }
     for (unsigned long long &num : en_passant_zobrist) {
         num = distrib(gen);
     }
@@ -408,14 +405,6 @@ std::string Board::GetMoveNotation() const {
     int form = last_move.from;
     int to = last_move.to;
     return positions[form] + positions[to];
-}
-
-bitboard Board::PiecesOfColor(bool color) {
-    bitboard output = 0;
-    for (auto &b :all_bitboards[color]) {
-        output |= b;
-    }
-    return output;
 }
 
 void Board::AddPiece(int piece, int pos, bool color) {

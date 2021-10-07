@@ -29,26 +29,15 @@ unsigned long long perft(int depth, Board &board) {
     return nodes;
 };
 
+// pri debugování porovnávám výsledky s jinými enginy
 void perft_divide(int depht) {
     Board board = Board();
     MoveGenerator gen = MoveGenerator();
-    vector<Move> lmao;
-//    lmao.push_back(gen.getLegalMoves(board)[8]);
-//    board.MakeMove(gen.getLegalMoves(board)[8]);
-//
-//    lmao.push_back(gen.getLegalMoves(board)[0]);
-//    board.MakeMove(gen.getLegalMoves(board)[0]);
-//    lmao.push_back(gen.getLegalMoves(board)[7]);
-//    board.MakeMove(gen.getLegalMoves(board)[7]);
-//    lmao.push_back(gen.getLegalMoves(board)[7]);
-//    board.MakeMove(gen.getLegalMoves(board)[7]);
-//    lmao.push_back(gen.getLegalMoves(board)[14]);
-//    board.MakeMove(gen.getLegalMoves(board)[14]);
     for (auto move : gen.getLegalMoves(board)) {
         Board next_board = board;
         next_board.MakeMove(move);
         if (next_board.GetMoveNotation() == "a5b6") {
-            bool test = 0;
+            bool test = 0; // pro debugovani
         }
         int result = perft(depht - 1, next_board);
         cout << positions[move.from] << positions[move.to] << ": " << result << "\n" << flush;

@@ -85,6 +85,5 @@ Move Search::IterativeDeepening(int depth, Board &board) {
             table.InsertEntry(board.zobrist_hash, TableEntry{i, bestMove});
         }
 
-
     return bestMove;
 }

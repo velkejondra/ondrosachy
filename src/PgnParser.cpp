@@ -2,13 +2,10 @@
 // Created by ondra on 30.09.2020.
 //
 #include <algorithm>
-#include <fstream>
-#include <fstream>
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <map>
-#include <vector>
 #include <iomanip>
 #include <random>
 #include "Board.h"
@@ -25,8 +22,7 @@ struct MoveCount {
 bool hasEnding(std::string const &fullString, std::string const &ending) {
     if (fullString.length() >= ending.length()) {
         return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -48,9 +44,9 @@ void PgnParser::ParsePgnToFile(const std::string input_file, int max_depth, int 
         if (line.substr(0, 2) != "1.") {
             continue;
         }
-        if (line == "1. e4 c5 2. Nc3 Nc6 3. Nge2 e5 4. Nd5 Be7 5. Nec3 Nf6 6. Bc4 O-O 7. d3 Nxd5\r\r") {
-            bool testik = true;
-        }
+//        if (line == "1. e4 c5 2. Nc3 Nc6 3. Nge2 e5 4. Nd5 Be7 5. Nec3 Nf6 6. Bc4 O-O 7. d3 Nxd5\r\r") {
+//            bool testik = true;
+//        }
         linecopy = line;
 
         //printování progresu
@@ -84,9 +80,9 @@ void PgnParser::ParsePgnToFile(const std::string input_file, int max_depth, int 
             if (token[token.size() - 1] == '+') {
                 token.erase(token.end() - 1);
             }
-            if (board.zobrist_hash == 15611873093638524977ULL) {
-                bool lmao = true;
-            }
+//            if (board.zobrist_hash == 15611873093638524977ULL) {
+//                bool lmao = true;
+//            }
             depth++;
             database[board.zobrist_hash][token]++;
             board.MakeMoveFromPGN(token);
@@ -110,7 +106,7 @@ void PgnParser::ParsePgnToFile(const std::string input_file, int max_depth, int 
         index_book << std::setfill('0') << std::setw(20) << kv.first << " " << std::setfill('0') << std::setw(20)
                    << data_book.tellp();
         data_book << kv.second.size();
-        for (const auto &second_kv : kv.second) {
+        for (const auto &second_kv: kv.second) {
             data_book << " " << second_kv.first << " " << second_kv.second;
         }
         index_book << '\n';
@@ -175,7 +171,7 @@ std::string OpeningBook::GetPGNMove(bitboard zobrist_hash) {
 
     int random_sum = distribution(gen);
 
-    for (const MoveEntry &move_entry : moves) {
+    for (const MoveEntry &move_entry: moves) {
         random_sum -= move_entry.frequency;
         if (random_sum <= 0) {
             return move_entry.move_pgn_string;
