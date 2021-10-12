@@ -7,13 +7,14 @@ Nainstalujte si tyto dependence, které obsahují kompilátor a knihovny potřeb
 ```bash
 sudo apt install build-essential libglu1-mesa-dev libpng-dev
 ```
-Poté se dostaňťe do adresáře src a zkompilujte projekt pomocí příkazu make
+Poté vytvoříte makefile pomocí cmake a zkompilujete projekt příkazem make.
 ```bash
-cd src
+cmake .
 make
 ```
-a nakonec spustíte program
+a nakonec spustíte program v adresáři src
 ```bash
+cd src
 ./gui_chess
 ```
 
